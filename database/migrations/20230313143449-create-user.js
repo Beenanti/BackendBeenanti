@@ -3,9 +3,16 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('User', {
-      nik: {
-        allowNull: false,
+      email: {
         primaryKey: true,
+        type: Sequelize.STRING(30),
+        allowNull: false
+      },
+      password: {
+        type: Sequelize.STRING(),
+        allowNull: false
+      },
+      nik: {
         type: Sequelize.STRING(16)
       },
       nama: {
@@ -14,35 +21,24 @@ module.exports = {
       },
       jenis_kelamin: {
         type: Sequelize.STRING(9),
-        allowNull: false
       },
       alamat: {
         type: Sequelize.STRING(),
-        allowNull: false
       },
       tempat_lahir: {
         type: Sequelize.STRING(30),
-        allowNull: false
       },
       tgl_lahir: {
         type: Sequelize.DATEONLY,
-        allowNull: false
-      },
-      email: {
-        type: Sequelize.STRING(30),
-        allowNull: false
       },
       no_hp: {
         type: Sequelize.STRING(13),
-        allowNull: false
       },
       foto: {
-        type: Sequelize.STRING(30),
-        allowNull: false
+        type: Sequelize.STRING(),
       },
       pekerjaan: {
         type: Sequelize.STRING(20),
-        allowNull: false
       },
       role: {
         type: Sequelize.STRING(20),

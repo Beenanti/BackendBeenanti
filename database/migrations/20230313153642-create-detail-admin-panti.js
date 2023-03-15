@@ -12,13 +12,13 @@ module.exports = {
           key: 'id_panti'
         }
       },
-      nik: {
+      email: {
         allowNull: false,
         primaryKey: true,
-        type: Sequelize.STRING(16),
+        type: Sequelize.STRING(30),
         references: {
           model: 'user',
-          key: 'nik'
+          key: 'email'
         }
       }
     });
@@ -38,11 +38,11 @@ module.exports = {
     // Menambahkan relasi antara tabel detail admin panti dan user
     await queryInterface.addConstraint('detail_admin_panti', {
       type: 'foreign key',
-      name: 'detailAdminPanti_nik_fk',
-      fields: ['nik'],
+      name: 'detailAdminPanti_email_fk',
+      fields: ['email'],
       references: {
         table: 'user',
-        field: 'nik'
+        field: 'email'
       },
       onDelete: 'cascade'
     });
@@ -50,7 +50,7 @@ module.exports = {
   async down(queryInterface, Sequelize) {
     // Hapus relasi dan tabel detail admin panti
     await queryInterface.removeConstraint('detail_admin_panti', 'detailAdminPanti_idPanti_fk');
-    await queryInterface.removeConstraint('detail_admin_panti', 'detailAdminPanti_nik_fk');
+    await queryInterface.removeConstraint('detail_admin_panti', 'detailAdminPanti_email_fk');
     await queryInterface.dropTable('detail_admin_panti');
   }
 };

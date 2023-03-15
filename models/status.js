@@ -1,17 +1,9 @@
 'use strict';
-const { Model } = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
-  class Status extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  }
-  Status.init({
+
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/db')
+
+const status = sequelize.define('status',{
     id_status: {
       allowNull: false,
       primaryKey: true,
@@ -22,10 +14,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull : false
     } 
   }, {
-    sequelize,
-    modelName: 'Status',
     timestamps: false, // Menonaktifkan kolom createdAt dan updatedAt
     tableName: 'status'
   });
-  return Status;
-};
+
+  module.exports = status

@@ -4,37 +4,28 @@ const cors = require('cors')
 const app = express()
 const port = 3000
 
-// use cors
-app.use(cors());
 
-// parse requests yang berupa json
-app.use(express.json());
+app.use(cors());  // use cors
+app.use(express.json());  // parse requests yang berupa json
+app.use(express.urlencoded({ extended: true }));  // parse requests yang berupa form data
+app.use(express.static('uploads'));
 
-// parse requests yang berupa form data
-app.use(express.urlencoded({ extended: true }));
 
 //panggil routes
-const auth = require("./routes/auth_route");
-app.use("/auth", auth);
-
-const panti = require("./routes/panti_route");
-app.use("/panti", panti);
-
-const user = require("./routes/user_route");
-app.use("/user", user);
+app.use("/auth", require('./routes/auth_route'));
+app.use("/panti", require('./routes/panti_route'));
+app.use("/user", require('./routes/user_route'));
 
 //halaman root
 app.get('/', (req, res) => {
-  res.send("API Beenanti")
+  res.send('API Beenanti')
   // res.sendFile(path.join(__dirname, '/index.html'));
 })
 
-app.post('/example', (req, res) => {
-  const {data} = req.body; // mengakses data yang dikirim dalam format JSON
-  res.send(`Data yang diterima: ${data}`);
+app.post('/tezz', (req, res) => {
+  const data = req.body;
+  res.json(data);
 });
-
-
 
 
 app.listen(port, () => {

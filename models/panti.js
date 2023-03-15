@@ -1,28 +1,21 @@
 'use strict';
-const { Model } = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
-  class Panti extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  }
-  Panti.init({
+
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/db')
+
+const panti = sequelize.define('panti',{
+
     id_panti: {
       allowNull: false,
       primaryKey: true,
       type: DataTypes.STRING
     },
-    nik_pengelola: {
-      type :  DataTypes.STRING,
-      allowNull: false
-    },
     nama_panti: {
       type : DataTypes.STRING,
+      allowNull: false
+    },
+    alamat: {
+      type :  DataTypes.STRING,
       allowNull: false
     },
     geom: {
@@ -59,11 +52,8 @@ module.exports = (sequelize, DataTypes) => {
       type :  DataTypes.STRING,
       allowNull: false
     } 
-   
   }, {
-    sequelize,
-    modelName: 'Panti',
     tableName: 'panti'
   });
-  return Panti;
-};
+
+  module.exports = panti;

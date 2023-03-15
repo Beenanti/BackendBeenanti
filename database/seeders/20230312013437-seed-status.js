@@ -11,7 +11,7 @@ module.exports = {
       },
       { 
         id_status: '2',
-        nama_status: "tdk aktif"
+        nama_status: "nonaktif"
       }
     ], {});
     

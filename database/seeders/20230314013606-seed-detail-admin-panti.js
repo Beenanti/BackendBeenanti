@@ -7,7 +7,7 @@ module.exports = {
     await queryInterface.bulkInsert('detail_admin_panti', [
       {
         id_panti: 'p01',
-        nik: "1391118234726872"
+        email: "adminpanti@email.com"
       },
   ], {});
 

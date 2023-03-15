@@ -1,17 +1,10 @@
 'use strict';
-const { Model } = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
-  class jenis_panti extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  }
-  jenis_panti.init({
+
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/db')
+
+const jenis_panti = sequelize.define('jenis_panti',{
+
     id_jenis: {
       allowNull: false,
       primaryKey: true,
@@ -22,10 +15,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     } 
   }, {
-    sequelize,
-    modelName: 'jenis_panti',
     timestamps: false, // Menonaktifkan kolom createdAt dan updatedAt
     tableName: 'jenis_panti'
   });
-  return jenis_panti;
-};
+
+  module.exports = jenis_panti;

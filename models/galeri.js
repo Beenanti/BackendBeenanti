@@ -3,10 +3,14 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db')
 
-const detail_admin_panti = sequelize.define('detail_admin_panti',{
-    id_panti: {
+const galeri = sequelize.define('galeri',{
+    id_gambar: {
       allowNull: false,
       primaryKey: true,
+      type: DataTypes.UUID
+    },
+    id_panti: {
+      allowNull: false,
       type: DataTypes.STRING(3)
     },
     nik:{
@@ -16,7 +20,7 @@ const detail_admin_panti = sequelize.define('detail_admin_panti',{
     }
   }, {
     timestamps: false, // Menonaktifkan kolom createdAt dan updatedAt
-    tableName: 'detail_admin_panti'
+    tableName: 'galeri'
   });
 
-  module.exports = detail_admin_panti;
+  module.exports = galeri;
