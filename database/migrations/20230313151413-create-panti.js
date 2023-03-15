@@ -8,29 +8,37 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.STRING(3)
       },
-      nik_pengelola: {
-        type: Sequelize.STRING(16)
-      },
       nama_panti: {
-        type: Sequelize.STRING(50)
+        type: Sequelize.STRING(50),
+        allowNull: false
+      },
+      alamat: {
+        type: Sequelize.STRING,
+        allowNull: false
       },
       geom: {
-        type: Sequelize.GEOMETRY
+        type: Sequelize.GEOMETRY,
+        allowNull: false
       },
       jumlah_anak: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       jumlah_pengurus: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       nama_pimpinan: {
-        type: Sequelize.STRING(30)
+        type: Sequelize.STRING(30),
+        allowNull: false
       },
       nohp: {
-        type: Sequelize.STRING(13)
+        type: Sequelize.STRING(13),
+        allowNull: false
       },
       email: {
-        type: Sequelize.STRING(30)
+        type: Sequelize.STRING(30),
+        allowNull: false
       },
       sosmed: {
         type: Sequelize.STRING(20)
@@ -40,14 +48,16 @@ module.exports = {
         references: {
           model: 'jenis_panti',
           key: 'id_jenis'
-        }
+        },
+        allowNull: false
       },
       status_id: {
         type: Sequelize.STRING(1),
         references: {
           model: 'status',
           key: 'id_status'
-        }
+        },
+        allowNull: false
       },
       createdAt: {
         allowNull: false,

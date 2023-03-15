@@ -9,41 +9,52 @@ module.exports = {
         type: Sequelize.STRING(16)
       },
       nama: {
-        type: Sequelize.STRING(30)
+        type: Sequelize.STRING(30),
+        allowNull: false
       },
       jenis_kelamin: {
-        type: Sequelize.STRING(9)
+        type: Sequelize.STRING(9),
+        allowNull: false
       },
       alamat: {
-        type: Sequelize.STRING()
+        type: Sequelize.STRING(),
+        allowNull: false
       },
       tempat_lahir: {
-        type: Sequelize.STRING(30)
+        type: Sequelize.STRING(30),
+        allowNull: false
       },
       tgl_lahir: {
-        type: Sequelize.DATEONLY
+        type: Sequelize.DATEONLY,
+        allowNull: false
       },
       email: {
-        type: Sequelize.STRING(30)
+        type: Sequelize.STRING(30),
+        allowNull: false
       },
       no_hp: {
-        type: Sequelize.STRING(13)
+        type: Sequelize.STRING(13),
+        allowNull: false
       },
       foto: {
-        type: Sequelize.STRING(30)
+        type: Sequelize.STRING(30),
+        allowNull: false
       },
       pekerjaan: {
-        type: Sequelize.STRING(20)
+        type: Sequelize.STRING(20),
+        allowNull: false
       },
       role: {
-        type: Sequelize.STRING(20)
+        type: Sequelize.STRING(20),
+        allowNull: false
       },
       status_id: {
         type: Sequelize.STRING(1),
         references: {
           model: 'status',
           key: 'id_status'
-        }
+        },
+        allowNull: false
       },
       createdAt: {
         allowNull: false,

@@ -3,13 +3,15 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
+
+    const point = Sequelize.fn('GeomFromText', 'POINT(-0.915414 100.460680)'); //-0.9154147192685002, 100.46068063856397
   
     await queryInterface.bulkInsert('panti', [
       {
         id_panti: "p01",
-        nik_pengelola: null,
         nama_panti: "Liga Dakwah",
-        geom: null,
+        alamat: "By Pazz",
+        geom: point,
         jumlah_anak: 120,
         jumlah_pengurus: 10,
         nama_pimpinan: "Yunizar AR",

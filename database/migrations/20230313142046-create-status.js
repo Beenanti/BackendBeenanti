@@ -9,7 +9,8 @@ module.exports = {
         type: Sequelize.STRING(1)
       },
       nama_status: {
-        type: Sequelize.STRING(10)
+        type: Sequelize.STRING(10),
+        allowNull: false
       }
     });
   },

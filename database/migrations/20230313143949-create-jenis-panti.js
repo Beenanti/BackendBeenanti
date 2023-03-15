@@ -9,7 +9,8 @@ module.exports = {
         type: Sequelize.STRING(1)
       },
       nama_jenis: {
-        type: Sequelize.STRING(20)
+        type: Sequelize.STRING(20),
+        allowNull: false
       }
     });
   },

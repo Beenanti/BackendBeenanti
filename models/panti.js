@@ -1,7 +1,5 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Panti extends Model {
     /**
@@ -19,17 +17,49 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.STRING
     },
-    nik_pengelola: DataTypes.STRING,
-    nama_panti: DataTypes.STRING,
-    geom: DataTypes.GEOMETRY,
-    jumlah_anak: DataTypes.INTEGER,
-    jumlah_pengurus: DataTypes.INTEGER,
-    nama_pimpinan: DataTypes.STRING,
-    nohp: DataTypes.STRING,
-    email: DataTypes.STRING,
-    sosmed: DataTypes.STRING,
-    id_jenis: DataTypes.STRING,
-    status_id: DataTypes.STRING
+    nik_pengelola: {
+      type :  DataTypes.STRING,
+      allowNull: false
+    },
+    nama_panti: {
+      type : DataTypes.STRING,
+      allowNull: false
+    },
+    geom: {
+      type :  DataTypes.GEOMETRY,
+      allowNull: false
+    },   
+    jumlah_anak: {
+      type :  DataTypes.INTEGER,
+      allowNull: false
+    },
+    jumlah_pengurus: {
+      type : DataTypes.INTEGER,
+    } ,
+    nama_pimpinan: {
+      type :  DataTypes.STRING,
+      allowNull: false
+    },   
+    nohp: {
+      type : DataTypes.STRING,
+      allowNull: false
+    },    
+    email: {
+      type : DataTypes.STRING,
+      allowNull: false
+    },    
+    sosmed: {
+      type :  DataTypes.STRING,
+    },
+    id_jenis: {
+      type : DataTypes.STRING,
+      allowNull: false
+    },
+    status_id: {
+      type :  DataTypes.STRING,
+      allowNull: false
+    } 
+   
   }, {
     sequelize,
     modelName: 'Panti',

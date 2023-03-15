@@ -1,7 +1,5 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Status extends Model {
     /**
@@ -14,7 +12,15 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Status.init({
-    nama_status: DataTypes.STRING
+    id_status: {
+      allowNull: false,
+      primaryKey: true,
+      type: DataTypes.STRING
+    },
+    nama_status:{
+      type : DataTypes.STRING,
+      allowNull : false
+    } 
   }, {
     sequelize,
     modelName: 'Status',
