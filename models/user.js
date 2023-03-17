@@ -38,9 +38,9 @@ const user = sequelize.define('user',{
     foto: {
       type : DataTypes.STRING,
     },
-    pekerjaan: {
-      type : DataTypes.STRING,
-    },
+    // pekerjaan: {
+    //   type : DataTypes.STRING,
+    // },
     role: {
       type : DataTypes.STRING,
       allowNull : false

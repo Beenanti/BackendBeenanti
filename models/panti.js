@@ -56,4 +56,4 @@ const panti = sequelize.define('panti',{
     tableName: 'panti'
   });
 
-  module.exports = panti;
+module.exports = panti;

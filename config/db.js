@@ -3,7 +3,8 @@ require('dotenv').config()
 
 const db = new Sequelize(process.env.NAMA_DB, process.env.USERNAME_DB, process.env.PASSWORD_DB, {
     host: '127.0.0.1',
-    dialect: 'mysql' 
+    dialect: 'mysql',
+    timezone: "+07:00" 
   });
 
   try {

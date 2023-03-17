@@ -10,7 +10,7 @@ const fileStorage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
       console.log(file);
-      cb(Error,  Date.now().toString() +  file.originalname)
+      cb(null,  Date.now().toString() + '_' + file.originalname)
     }
 })
 
@@ -35,5 +35,7 @@ const upload = multer({
 router.post("/register-mobile", authController.registerMobile);
 router.post("/register-mimin-master", authController.registerAdminMaster);
 router.post("/register-mimin-panti", upload.single('foto') ,authController.registerAdminPanti);
+router.post("/login", authController.login);
+router.post("/logout", authController.logout);
 
 module.exports = router

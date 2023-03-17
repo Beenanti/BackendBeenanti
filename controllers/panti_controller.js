@@ -9,7 +9,7 @@ exports.getListPanti = async (req, res) => {
         res.json({pesan: "data tidak ada"})
       }
     } catch (error) {
-      res.status(500).json({ message: 'Error occurred while fetching locations' });
+      res.status(500).json({ message: error });
       console.error(error);
     }
   };

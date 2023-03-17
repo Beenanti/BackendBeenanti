@@ -18,4 +18,4 @@ const status = sequelize.define('status',{
     tableName: 'status'
   });
 
-  module.exports = status
+  module.exports = status;

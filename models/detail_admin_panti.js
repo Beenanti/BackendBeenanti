@@ -9,7 +9,7 @@ const detail_admin_panti = sequelize.define('detail_admin_panti',{
       primaryKey: true,
       type: DataTypes.STRING(3)
     },
-    nik:{
+    email:{
       allowNull: false,
       primaryKey: true,
       type: DataTypes.STRING(16)
