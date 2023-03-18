@@ -16,6 +16,7 @@ const token_user = sequelize.define('token_user',{
     },
     remember_token: {
       type : DataTypes.STRING,
+      unique: true
     },
     ip_address: {
       type: DataTypes.STRING(20),

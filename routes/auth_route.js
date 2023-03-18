@@ -20,7 +20,7 @@ const fileFilter = (req, file, cb) => {
         file.mimetype === 'image/jpeg') {
         cb(null, true)
     }else{
-        cb("tipe/ekstensi file tidak sesuai (png, jpg, jpeg)", false)
+        cb(null, false)
     }
 }
 
@@ -34,7 +34,7 @@ const upload = multer({
 
 router.post("/register-mobile", authController.registerMobile);
 router.post("/register-mimin-master", authController.registerAdminMaster);
-router.post("/register-mimin-panti", upload.single('foto') ,authController.registerAdminPanti);
+router.post("/register-mimin-panti", upload.single('foto'), authController.registerAdminPanti);
 router.post("/login", authController.login);
 router.post("/logout", authController.logout);
 

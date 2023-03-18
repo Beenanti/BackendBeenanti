@@ -5,6 +5,18 @@ const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 require('dotenv').config()
+const fs = require('fs');
+
+// fungsi untuk menghapus file
+const deleteFile = (filePath) => {
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error(err)
+        throw new Error('Failed to delete file');
+      }
+    });
+  };
+
 
 // ----------------------Register----------------------
 const registerMobile = async (req,res) =>{
@@ -13,13 +25,13 @@ const registerMobile = async (req,res) =>{
 
         // cek password sudah sama dengan konfirmasi password
         if (password !== konfirmasiPassword) {
-            return res.status(400).json({ message: 'Password dan Confirm Password tidak cocok' })
+            return res.status(422).json({ error:true, message: 'Password dan Konfirmasi Password tidak cocok' })
         } 
 
         // cek sudah ada email sudah digunakan atau belum
         const adaEmail = await modelUser.findOne({ where: { email } });
         if (adaEmail) {
-            return res.status(400).json({ message: 'Email sudah digunakan' });
+            return res.status(409).json({ error: true, message: 'Email sudah digunakan' });
         }
 
         // hash password
@@ -35,13 +47,13 @@ const registerMobile = async (req,res) =>{
 
         // kembalikan pesan sukses
         if (userBaru) {
-            return res.status(201).json({ message: 'User berhasil registrasi' });
+            return res.status(201).json({ error:false, message: 'User berhasil registrasi' });
         } else {
-            return res.json({ message: 'Gagal menambahkan data' });
+            return res.json({ error:true, message: 'Gagal menambahkan data' });
         }
 
     } catch (error) {
-        res.status(500).json({ message: error });
+        res.status(500).json({ error:true, message: error });
     }
 }
 
@@ -51,13 +63,13 @@ const registerAdminMaster = async (req,res) =>{
 
         // cek password sudah sama dengan konfirmasi password
         if (password !== konfirmasiPassword) {
-            return res.status(400).json({ message: 'Password dan Confirm Password tidak cocok' })
+            return res.status(422).json({ error:true, message: 'Password dan Konfirmasi Password tidak cocok' })
         } 
 
         // cek sudah ada email sudah digunakan atau belum
         const adaEmail = await modelUser.findOne({ where: { email } });
         if (adaEmail) {
-            return res.status(400).json({ message: 'Email sudah digunakan' });
+            return res.status(409).json({ error:true, message: 'Email sudah digunakan' });
         }
 
         // hash password
@@ -73,31 +85,34 @@ const registerAdminMaster = async (req,res) =>{
 
         // kembalikan pesan sukses
         if (userBaru) {
-            return res.status(201).json({ message: 'User berhasil registrasi' });
+            return res.status(201).json({ error:false, message: 'User berhasil registrasi' });
         } else {
-            return res.json({ message: 'Gagal menambahkan data' });
+            return res.json({ error:false, message: 'Gagal menambahkan data' });
         }
 
     } catch (error) {
-        res.status(500).json({ message: error });
+        res.status(500).json({ error:true, message: error });
     }
 }
 
 const registerAdminPanti = async (req,res) =>{
     try {
-        const {id_panti, nik, nama, email, nohp, jenis_kelamin, tempat_lahir, tgl_lahir, alamat, password, konfirmasiPassword} = req.body;
-
-        const foto = req.file.filename
-
+        
+        const {email, id_panti, nik, nama, nohp, jenis_kelamin, tempat_lahir, tgl_lahir, alamat, password, konfirmasiPassword} = req.body;
+        const foto = req.file.filename;
+        
         // cek password sudah sama dengan konfirmasi password
         if (password !== konfirmasiPassword) {
-            return res.status(400).json({ message: 'Password dan Confirm Password tidak cocok' })
+            deleteFile('./uploads/pp/' + foto)
+            return res.status(422).json({ error: true, message: 'Password dan Confirm Password tidak cocok' })
         } 
-
+        // console.log("ini emailnya aaaaa " + id_panti + nik + nama + foto)
+        
         // cek sudah ada email sudah digunakan atau belum
         const adaEmail = await modelUser.findOne({ where: { email } });
         if (adaEmail) {
-            return res.status(400).json({ message: 'Email sudah digunakan' });
+            deleteFile('./uploads/pp/' + foto)
+            return res.status(409).json({ error: true, message: 'Email sudah digunakan' });
         }
 
         // hash password
@@ -116,21 +131,20 @@ const registerAdminPanti = async (req,res) =>{
             id_panti, email
         })
         
-        if (userBaru && adminBaru) {
-            return res.status(201).json({ message: 'User berhasil registrasi' });
+        if (foto && userBaru && adminBaru) {
+            return res.status(201).json({ error: false, message: 'User berhasil registrasi' });
         } else {
-            return res.json({ message: 'Gagal menambahkan data' });
+            return res.json({ error: true, message: 'Gagal menambahkan data' });
         }
         
     } catch (error) {
-        res.status(500).json({ message: error });
-        console.error(error);
+        res.status(500).json({ error:true, message: error });
     }
 }
 
 // --------------------Login--------------------------
 
-const login = async (req, res) =>{
+const login = async (req, res, next) =>{
     try {
         const {email, password} = req.body;
 
@@ -143,50 +157,35 @@ const login = async (req, res) =>{
         // Check if user exists
         const user = await modelUser.findOne({ where: { email } });
         if (!user) {
-            return res.status(401).json({ message: 'Email atau password tidak valid' });
+            return res.status(422).json({ error:true, message: 'Email atau password tidak valid' });
         }
-
-        console.log(user);
 
         // Check if password is correct
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {
-            return res.status(401).json({ message: 'Email atau password tidak valid' });
+            return res.status(422).json({ error:true, message: 'Email atau password tidak valid' });
         }
         
         // ambil role, email dan nama user
         const role_user = user.role;
         const nama_user =user.nama;
-
-        // cek udah ada token dari ip yang sama atau belum
-        const ip = req.ip;
-        const adaIp = await modelToken.findOne({where: {ip_address: ip}})
-        if (adaIp) {
-            return res.status(401).json({ 
-                message: 'logout dulu, baru login lagi',
-                token_sebelumnya : adaIp.remember_token, 
-                data_user: {
-                    email, nama_user, role_user
-                } 
-            });
-        }
+        const ip = req.connection.remoteAddress || req.ip;
 
         // Create and sign a JWT token
         const token = jwt.sign({email, role_user }, process.env.SECRET_KEY, {
-            // expiresIn: '1m',
+            expiresIn: '90d',  //token kadaluarsa dalam 90 hari
         });
         
-        await modelToken.create( { 
-                user: email,
-                remember_token: token,
-                ip_address: req.ip,
-                createdAt: new Date(),
-            }, 
-            { where: { email }}
-        );
+        await modelToken.create({ 
+            user: email,
+            remember_token: token,
+            ip_address: ip,
+            createdAt: new Date(),
+        });
 
         // Return the token and user information
         return res.status(200).json({
+            error: false,
             message: 'Berhasil Login!',
             token, 
             data_user: {
@@ -195,7 +194,7 @@ const login = async (req, res) =>{
         });
 
     } catch (error) {
-        res.status(500).json({ message: error});
+        res.status(500).json({ error: true, error_message: error});
     }
 }
     
@@ -208,18 +207,18 @@ const logout = async (req, res) =>{
         
         // jika token tidak ada, kembalikan respons error
         if (authHeader == null||authHeader == undefined) {
-            return res.status(401).json({ message: 'Token tidak ada' });
+            return res.status(401).json({ error: true, message: 'Token tidak ada' });
         }
 
         // verifikasi token
         jwt.verify(token, process.env.SECRET_KEY, async (err, user) => {
             if (err) {
-              return res.status(401).json({ message: err });
+              return res.status(401).json({ error: true, message: err });
             }
 
             const adaToken = await modelToken.findOne({where: {remember_token: token}})
             if (!adaToken) {
-                return res.status(401).json({ message: "Tidak ada token atau sudah logout sebelumnya" });
+                return res.status(401).json({ error: true, message: "Tidak ada token atau sudah logout sebelumnya" });
             }
             
             // hapus token dari database
@@ -228,12 +227,11 @@ const logout = async (req, res) =>{
             );
         
             // kembalikan respons berhasil logout
-            res.status(200).json({ message: 'Logout berhasil' });
+            res.status(200).json({ error: false, message: 'Logout berhasil' });
         });
         
     } catch (error) {
-        res.status(500).json({ message: error });
-        console.error(error);
+        res.status(500).json({ error: true, message: error });
     }
 }
 

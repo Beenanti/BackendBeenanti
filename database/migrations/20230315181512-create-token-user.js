@@ -17,7 +17,8 @@ module.exports = {
           allowNull: false
       },
       remember_token: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        unique: true
       },
       ip_address: {
         type: Sequelize.STRING(20)
