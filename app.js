@@ -23,8 +23,7 @@ app.get('/', (req, res) => {
 })
 
 app.post('/tezz', (req, res) => {
-  const data = req.body;
-  res.json(data);
+  res.json(req.body);
 });
 
 

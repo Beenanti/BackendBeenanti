@@ -145,13 +145,14 @@ const logout = async (req, res) =>{
     try {
         // mengambil token dari header Authorization
         const authHeader = req.get('Authorization');
-        const token = authHeader.split(' ')[1];
         
         // jika token tidak ada, kembalikan respons error
         if (authHeader == null||authHeader == undefined) {
             return res.status(401).json({ error: true, message: 'Token tidak ada' });
         }
 
+        const token = authHeader.split(' ')[1];
+        
         // verifikasi token
         jwt.verify(token, process.env.SECRET_KEY, async (err, user) => {
             if (err) {
@@ -164,9 +165,7 @@ const logout = async (req, res) =>{
             }
             
             // hapus token dari database
-            await modelToken.destroy(
-                { where: {remember_token: token}}
-            );
+            await modelToken.destroy({ where: {remember_token: token}});
         
             // kembalikan respons berhasil logout
             res.status(200).json({ error: false, message: 'Logout berhasil' });

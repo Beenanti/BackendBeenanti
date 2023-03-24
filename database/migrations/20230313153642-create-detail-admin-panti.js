@@ -44,7 +44,8 @@ module.exports = {
         table: 'user',
         field: 'email'
       },
-      onDelete: 'cascade'
+      // onDelete: 'cascade',
+      // onUpdate: 'cascade'
     });
   },
   async down(queryInterface, Sequelize) {
