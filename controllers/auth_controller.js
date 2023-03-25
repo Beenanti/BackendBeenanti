@@ -93,19 +93,19 @@ const login = async (req, res, next) =>{
         // Validate request
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).json({ errors: errors.array() });
+            return res.status(401).json({ errors: errors.array() });
         }
 
         // Check if user exists
         const user = await modelUser.findOne({ where: { email } });
         if (!user) {
-            return res.status(422).json({ error:true, message: 'Email atau password tidak valid' });
+            return res.status(401).json({ error:true, message: 'Email atau password tidak valid' });
         }
 
         // Check if password is correct
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {
-            return res.status(422).json({ error:true, message: 'Email atau password tidak valid' });
+            return res.status(401).json({ error:true, message: 'Email atau password tidak valid' });
         }
         
         // ambil role, email dan nama user
@@ -176,4 +176,4 @@ const logout = async (req, res) =>{
     }
 }
 
-module.exports = {registerMobile, registerAdminMaster, login, logout}
+module.exports = {registerMobile, registerAdminMaster, login, logout};

@@ -1,5 +1,3 @@
-const express = require("express");
-const app = express();
 const jwt = require('jsonwebtoken');
 require('dotenv').config()
 
@@ -20,10 +18,11 @@ const authenticateUser = async (req,res, next) =>{
             return res.status(401).json({ error: true, message: err });
         }
 
-        // const adaToken = await modelToken.findOne({where: {remember_token: token}})
-        // if (!adaToken) {
-        //     return res.status(401).json({ error: true, message: "Tidak ada token atau sudah logout sebelumnya" });
-        // }
+        const adaToken = await modelToken.findOne({where: {remember_token: token}})
+        if (!adaToken) {
+            return res.status(401).json({ error: true, message: "Tidak ada token atau sudah logout sebelumnya" });
+        }
+        
         req.user = user;
         next();
     });

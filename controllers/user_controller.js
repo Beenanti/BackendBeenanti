@@ -72,7 +72,11 @@ const detailAdminPanti = async (req,res, next) =>{
     }
 
     const data = await modelUser.findByPk(email, {attributes:  {exclude:['password']} })
-    res.status(200).json({error: false, data})
+    if (data) {
+      return res.status(200).json({error: false, data})
+    } else {
+      res.status(404).json({error:true, message:"user tidak ada"})
+    }
 
   } catch (error) {
     res.status(500).json({ error:true, message: error });
@@ -82,7 +86,11 @@ const detailAdminPanti = async (req,res, next) =>{
 const lihatProfil = async (req,res, next) =>{
   try {
     const data = await modelUser.findByPk( req.user.email, {attributes: {exclude:['password', 'role']} } );
-    res.status(200).json({ error: false, data});
+    if (data) {
+      return res.status(200).json({ error: false, data});
+    } else {
+      res.status(404).json({error:true, message:"user tidak ada"})
+    }
     
   } catch (error) {
       res.status(500).json({ error:true, message: error });
@@ -152,10 +160,11 @@ const registerAdminPanti = async (req,res, next) =>{
         id_panti, email
     })
     
-    if ( userBaru && adminPantiBaru) {
-        return res.status(201).json({ error: false, message: 'User berhasil registrasi' });
+    if ( userBaru[0]>0 && adminPantiBaru[0]>0) {
+      return res.status(201).json({ error: false, message: 'User berhasil registrasi' });
     } else {
-        console.error("gagal regis")
+      res.json({error:true, message: "gagal regis"})
+      console.error("gagal regis")
     }
 
   } catch (error) {
@@ -187,15 +196,17 @@ const editAdminPanti = async (req,res, next) =>{
     
     const updateUser = await modelUser.update(dataBaru, {where: {email:emailAdmin} })
     
-    const detailAdmin = {}
-    if (id_panti) { detailAdmin.id_panti = id_panti; }
+    const updateAdminPanti = {}
+    if (email) { updateAdminPanti.email = email; }
+    if (id_panti) { updateAdminPanti.id_panti = id_panti; }
 
-    const updateDetailAdmin = await modelDetailAdminPanti.update(detailAdmin, {where: {email} })
+    const updateDetailAdmin = await modelDetailAdminPanti.update(updateAdminPanti, {where: {email} })
 
-    if (updateUser && updateDetailAdmin) {
-      return res.status(200).json({error: false, message: 'berhasil update data', updateUser, updateDetailAdmin});
+    if (updateUser[0]>0 || updateDetailAdmin[0]>0) {
+      return res.status(200).json({error: false, message: 'berhasil update data', data_baru:{user:dataBaru, admin_panti:updateAdminPanti} });
     } else { 
-      console.error("gagal update")
+      console.error("tidak ada update")
+      res.json({error: true, message: 'tidak ada data yang diupdate (email yang dimaksud tidak ada, atau body requestnya kosong)', data_baru:{user:dataBaru, admin_panti:updateAdminPanti}}).status(304);
     } 
 
   } catch (error) {
@@ -245,4 +256,35 @@ const tambahFotoUser = async (req,res, next) =>{
     }
 }
 
-module.exports = {registerAdminPanti, lihatProfil, editProfil, tambahFotoUser ,listDataUser, listAdminPanti, detailAdminPanti, editAdminPanti }
+const ubahPassword = async (req,res, next) =>{
+  try {
+    const {sandi_lama, sandi_baru, konfirmasi_sandi_baru} = req.body;
+
+    const sandi = await modelUser.findOne({ where: { sandi_lama } });
+    if (!sandi) {
+        return res.status(401).json({ error:true, message: 'Masukkan sandi yang sesuai' });
+    }
+
+    if (sandi_baru !== konfirmasi_sandi_baru) {
+      return res.status(422).json({ error: true, message: 'Password dan konfirmasi password tidak sesuai' })
+    }
+
+    // hash password
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(sandi_baru, salt);
+
+    const sandiBaru = await modelUser.update({password:hashedPassword}, {where: {email:req.user.email}})
+
+    if ( sandiBaru[0]>0 ) {
+      return res.status(201).json({ error: false, message: 'User berhasil ganti password' });
+    } else {
+      res.json({error:true, message: "gagal ganti password"})
+      console.error("gagal")
+    }
+
+  } catch (error) {
+    res.status(500).json({ error:true, message: error });
+  }
+}
+
+module.exports = {registerAdminPanti, lihatProfil, editProfil, tambahFotoUser ,listDataUser, listAdminPanti, detailAdminPanti, editAdminPanti, ubahPassword };

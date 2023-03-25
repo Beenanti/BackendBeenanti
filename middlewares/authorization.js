@@ -1,6 +1,11 @@
-const express = require("express");
-const app = express();
 const jwt = require('jsonwebtoken');
 require('dotenv').config()
 
-// module.exports = 
+const isMiminMaster = async (req,res, next) =>{
+    if (req.user.role != "admin_master" ) {
+        return res.status(403).json({ error: true, message: 'Anda tidak memiliki hak akses' });
+    }
+    next();
+}
+
+module.exports = {isMiminMaster};

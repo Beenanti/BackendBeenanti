@@ -32,7 +32,8 @@ module.exports = {
         table: 'panti',
         field: 'id_panti'
       },
-      onDelete: 'cascade'
+      onDelete: 'cascade',
+      onUpdate: 'cascade'
     });
     
     // Menambahkan relasi antara tabel detail admin panti dan user
@@ -44,8 +45,8 @@ module.exports = {
         table: 'user',
         field: 'email'
       },
-      // onDelete: 'cascade',
-      // onUpdate: 'cascade'
+      onDelete: 'cascade',
+      onUpdate: 'cascade'
     });
   },
   async down(queryInterface, Sequelize) {
