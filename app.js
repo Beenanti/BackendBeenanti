@@ -6,7 +6,7 @@ require('dotenv').config()
 const port = process.env.PORT
 
 app.use(cors());  // use cors
-app.use(express.json({limit: '5mb'}));  // parse requests yang berupa json
+app.use(express.json());  // parse requests yang berupa json
 app.use(express.urlencoded({ extended: true }));  // parse requests yang berupa form data
 app.use(express.static('uploads'));
 

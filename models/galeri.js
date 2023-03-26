@@ -1,7 +1,7 @@
 'use strict';
 
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db')
+const sequelize = require('../config/db');
 
 const galeri = sequelize.define('galeri',{
     id_gambar: {
@@ -13,10 +13,13 @@ const galeri = sequelize.define('galeri',{
       allowNull: false,
       type: DataTypes.STRING(3)
     },
-    nik:{
+    url_gambar:{
       allowNull: false,
-      primaryKey: true,
-      type: DataTypes.STRING(16)
+      type: DataTypes.STRING
+    },
+    deskripsi:{
+      allowNull: false,
+      type: DataTypes.STRING
     }
   }, {
     timestamps: false, // Menonaktifkan kolom createdAt dan updatedAt

@@ -1,5 +1,7 @@
 const modelUser = require("../models/user");
 const modelDetailAdminPanti = require("../models/detail_admin_panti");
+const { QueryTypes } = require('sequelize');
+const db = require('../config/db');
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
@@ -24,16 +26,20 @@ const listDataUser = async (req,res, next) =>{
     const jumlah = parseInt(req.query.jumlah)||25;
     const halaman = parseInt(req.query.halaman)||1;
 
-    // console.log(jumlah + "-----" + halaman)
+    // const dataUser = await modelUser.findAndCountAll({
+    //   attributes: {exclude:['password', 'role']},
+    //   limit: jumlah,
+    //   offset: jumlah*(halaman-1),
+    //   where: {role: "user_mobile"}
+    // });
 
-    const dataUser = await modelUser.findAndCountAll({
-      attributes: {exclude:['password', 'role']},
-      limit: jumlah,
-      offset: jumlah*(halaman-1),
-      where: {role: "user_mobile"}
+    const data_user = await db.query('SELECT email, nik, nama, jenis_kelamin, alamat, tempat_lahir, tgl_lahir, no_hp, foto, pekerjaan, nama_status AS status, createdAt AS waktu_regis, updatedAt AS terakhir_update_profil FROM user JOIN status ON user.status_id = status.id_status WHERE user.role = ? LIMIT ?, ?', {
+      replacements: ['user_mobile', jumlah*(halaman-1), jumlah],
+      type : QueryTypes.SELECT
     });
-    if (dataUser) {
-      res.status(200).json(dataUser);
+
+    if (data_user) {
+      res.status(200).json({error:false, count:data_user.length, data_user});
     }
 
   } catch (error) {
@@ -47,16 +53,20 @@ const listAdminPanti = async (req,res, next) =>{
     const jumlah = parseInt(req.query.jumlah)||25;
     const halaman = parseInt(req.query.halaman)||1;
 
-    // console.log(jumlah + "-----" + halaman)
+    // const dataAdmin = await modelUser.findAndCountAll({
+    //   attributes: {exclude:['password', 'role']},
+    //   limit: jumlah,
+    //   offset: jumlah*(halaman-1),
+    //   where: {role: "admin_panti"}
+    // });
 
-    const dataAdmin = await modelUser.findAndCountAll({
-      attributes: {exclude:['password', 'role']},
-      limit: jumlah,
-      offset: jumlah*(halaman-1),
-      where: {role: "admin_panti"}
+    const data_admin = await db.query('SELECT email, nik, nama, jenis_kelamin, alamat, tempat_lahir, tgl_lahir, no_hp, foto, pekerjaan, nama_status AS status, createdAt AS waktu_regis, updatedAt AS terakhir_update_profil FROM user JOIN status ON user.status_id = status.id_status WHERE user.role = ? LIMIT ?, ?', {
+      replacements: ['admin_panti', jumlah*(halaman-1), jumlah],
+      type : QueryTypes.SELECT
     });
-    if (dataAdmin) {
-      res.status(200).json(dataAdmin);
+
+    if (data_admin) {
+      res.status(200).json({error:false, count:data_admin.length, data_admin});
     }
   } catch (error) {
     res.status(500).json({ error:true, message: error });
@@ -71,7 +81,7 @@ const detailAdminPanti = async (req,res, next) =>{
       return res.status(401).json({ error: true, message: 'Email pada parameternya kosong' });
     }
 
-    const data = await modelUser.findByPk(email, {attributes:  {exclude:['password']} })
+    const data = await modelUser.findByPk(email, {attributes:  {exclude:['password']} }, {where: {role: "admin_panti"}})
     if (data) {
       return res.status(200).json({error: false, data})
     } else {
@@ -115,7 +125,7 @@ const editProfil = async (req,res, next) =>{
     
     const update = await modelUser.update(dataBaru, {where: {email:req.user.email} })
 
-    if (update) {
+    if (update[0]>0) {
       return res.status(200).json({error: false, message: 'berhasil update data', dataBaru});
     } else { 
       console.error("gagal update")
@@ -160,11 +170,11 @@ const registerAdminPanti = async (req,res, next) =>{
         id_panti, email
     })
     
-    if ( userBaru[0]>0 && adminPantiBaru[0]>0) {
+    if ( userBaru && adminPantiBaru) {
       return res.status(201).json({ error: false, message: 'User berhasil registrasi' });
     } else {
       res.json({error:true, message: "gagal regis"})
-      console.error("gagal regis")
+      // console.error(userBaru + "--------" + adminPantiBaru)
     }
 
   } catch (error) {
@@ -180,7 +190,7 @@ const editAdminPanti = async (req,res, next) =>{
       return res.status(401).json({ error: true, message: 'Email pada parameternya kosong' });
     }
 
-    const {email, id_panti, nik, nama, jenis_kelamin, alamat, tempat_lahir, tgl_lahir, no_hp, pekerjaan, status} = req.body;
+    const {email, id_panti, nik, nama, jenis_kelamin, alamat, tempat_lahir, tgl_lahir, no_hp, pekerjaan, status_id} = req.body;
 
     const dataBaru = {}
     if (email) { dataBaru.email = email; }
@@ -192,9 +202,9 @@ const editAdminPanti = async (req,res, next) =>{
     if (tgl_lahir) { dataBaru.tgl_lahir = tgl_lahir; }
     if (no_hp) { dataBaru.no_hp = no_hp; }
     if (pekerjaan) { dataBaru.pekerjaan = pekerjaan; }
-    if (status) { dataBaru.status = status; }
+    if (status_id) { dataBaru.status_id = status_id; }
     
-    const updateUser = await modelUser.update(dataBaru, {where: {email:emailAdmin} })
+    const updateUser = await modelUser.update(dataBaru, {where: {email:emailAdmin, role:"admin_panti"} })
     
     const updateAdminPanti = {}
     if (email) { updateAdminPanti.email = email; }
@@ -214,7 +224,7 @@ const editAdminPanti = async (req,res, next) =>{
   }
 }
 
-const tambahFotoUser = async (req,res, next) =>{
+const tambahFotoAdminPanti = async (req,res, next) =>{
     try {
       const email = req.params.email;
 
@@ -227,24 +237,10 @@ const tambahFotoUser = async (req,res, next) =>{
       if (!foto) {
         return res.status(404).json({ message: 'Foto tidak ada' });
       }
-
-      // memberi nama file
-    //   const ekstensi_file = foto.split(';')[0].split('/')[1];
-    //   const filename = Date.now().toString();
-    //   const filePath = `./uploads/pp/${filename}.${ekstensi_file}`;
-    //   const content = foto.split('base64,')[1]
-  
-    //   fs.writeFile(filePath, content, 'base64', (err) => {
-    //     if (err) {
-    //       console.error(err);
-    //     } else {
-    //       console.log(`File ${filename}.${ekstensi_file} berhasil disimpan.`);
-    //     }
-    //   });
   
       const fotoBaru = await modelUser.update({foto}, {where: {email}})
   
-      if ( fotoBaru ) {
+      if ( fotoBaru[0]>0 ) {
           return res.status(201).json({ error: false, message: 'Berhasil Upload Foto' });
       } else {
           console.error("gagal upload")
@@ -260,8 +256,14 @@ const ubahPassword = async (req,res, next) =>{
   try {
     const {sandi_lama, sandi_baru, konfirmasi_sandi_baru} = req.body;
 
-    const sandi = await modelUser.findOne({ where: { sandi_lama } });
-    if (!sandi) {
+    const data_user = await modelUser.findByPk(req.user.email);
+    if (!data_user) {
+      return res.status(404).json({ message: 'User tidak ditemukan' });
+    }
+
+    const isPasswordValid = await bcrypt.compare(sandi_lama, data_user.password);
+
+    if (!isPasswordValid) {
         return res.status(401).json({ error:true, message: 'Masukkan sandi yang sesuai' });
     }
 
@@ -287,4 +289,26 @@ const ubahPassword = async (req,res, next) =>{
   }
 }
 
-module.exports = {registerAdminPanti, lihatProfil, editProfil, tambahFotoUser ,listDataUser, listAdminPanti, detailAdminPanti, editAdminPanti, ubahPassword };
+const tambahFotoUser = async (req,res, next) =>{
+  try {
+    const foto = req.file.filename;
+    if (!foto) {
+      return res.status(404).json({ message: 'Foto tidak ada' });
+    }
+
+    const fotoBaru = await modelUser.update({foto}, {where: {email:req.user.email}})
+  
+    if ( fotoBaru[0]>0 ) {
+        return res.status(201).json({ error: false, message: 'Berhasil Upload Foto' });
+    } else {
+        console.error("gagal upload")
+        deleteFile('./uploads/pp/' + foto)
+    }
+
+  } catch (error) {
+    res.status(500).json({ error:true, message: error });
+  }
+}
+
+
+module.exports = {registerAdminPanti, lihatProfil, editProfil, tambahFotoAdminPanti ,listDataUser, listAdminPanti, detailAdminPanti, editAdminPanti, ubahPassword, tambahFotoUser };

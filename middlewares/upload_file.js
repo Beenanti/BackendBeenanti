@@ -31,4 +31,4 @@ const upload_pp = multer({
 })
 
 
-module.exports = {upload_pp}
+module.exports = {upload_pp};
