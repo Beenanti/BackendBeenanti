@@ -77,7 +77,7 @@ const listAdminPanti = async (req,res, next) =>{
 const detailAdminPanti = async (req,res, next) =>{
   try {
     const email = req.params.email
-    if (req.params.email == null||req.params.email == undefined) {
+    if (email == null||email == undefined) {
       return res.status(401).json({ error: true, message: 'Email pada parameternya kosong' });
     }
 
@@ -139,10 +139,10 @@ const editProfil = async (req,res, next) =>{
 
 const registerAdminPanti = async (req,res, next) =>{
   try {
-    const {email, password, konfirmasiPassword } = req.body;
+    const {email, password, konfirmasi_password } = req.body;
 
     // cek password sudah sama dengan konfirmasi password
-    if (password !== konfirmasiPassword) {
+    if (password !== konfirmasi_password) {
       return res.status(422).json({ error: true, message: 'Password dan Confirm Password tidak cocok' })
     } 
     

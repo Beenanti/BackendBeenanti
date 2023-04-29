@@ -1,6 +1,6 @@
 'use strict';
 
-const { DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize')
 const sequelize = require('../config/db')
 
 const detail_admin_panti = sequelize.define('detail_admin_panti',{

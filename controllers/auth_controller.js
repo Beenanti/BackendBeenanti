@@ -9,10 +9,10 @@ require('dotenv').config()
 // ----------------------Register----------------------
 const registerMobile = async (req,res) =>{
     try {
-        const {email, nama, password, konfirmasiPassword} = req.body;
+        const {email, nama, password, konfirmasi_password} = req.body;
 
         // cek password sudah sama dengan konfirmasi password
-        if (password !== konfirmasiPassword) {
+        if (password !== konfirmasi_password) {
             return res.status(422).json({ error:true, message: 'Password dan Konfirmasi Password tidak cocok' })
         } 
 
@@ -47,10 +47,10 @@ const registerMobile = async (req,res) =>{
 
 const registerAdminMaster = async (req,res) =>{
     try {
-        const {email, nama, password, konfirmasiPassword} = req.body;
+        const {email, nama, password, konfirmasi_password} = req.body;
 
         // cek password sudah sama dengan konfirmasi password
-        if (password !== konfirmasiPassword) {
+        if (password !== konfirmasi_password) {
             return res.status(422).json({ error:true, message: 'Password dan Konfirmasi Password tidak cocok' })
         } 
 

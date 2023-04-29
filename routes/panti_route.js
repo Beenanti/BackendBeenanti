@@ -1,8 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const pantiController = require("../controllers/panti_controller")
+const pantiController = require("../controllers/panti_controller");
+const {authenticateUser} = require('../middlewares/authentication');
 
-router.get("/", pantiController.getListPanti);
+router.get('/', pantiController.getList);
+router.get('/jenis-status', pantiController.statusJenisPanti);
+router.get('/kelola', authenticateUser, pantiController.lihatDataDikelola);
+router.get('/:id_panti', pantiController.detail);
+router.post('/tambah', pantiController.tambah);
+router.patch('/edit/:id_panti', pantiController.edit);
+router.post('/kelola/edit/:id_panti', pantiController.editDataDikelola);
 
-
-module.exports = router
+module.exports = router;

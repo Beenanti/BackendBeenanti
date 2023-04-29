@@ -21,7 +21,7 @@ const user = sequelize.define('user',{
       allowNull : false
     },
     jenis_kelamin: {
-      type : DataTypes.STRING,
+      type : DataTypes.ENUM('laki-laki', 'perempuan'),
     },
     alamat: {
       type : DataTypes.STRING,
@@ -42,7 +42,7 @@ const user = sequelize.define('user',{
       type : DataTypes.STRING,
     },
     role: {
-      type : DataTypes.STRING,
+      type : DataTypes.ENUM('admin_master', 'user_mobile', 'admin_panti'),
       allowNull : false
     },
     status_id: {
