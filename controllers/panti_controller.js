@@ -3,12 +3,12 @@ const modelPanti = require("../models/panti");
 const modelStatus = require("../models/status");
 const modelUser = require("../models/user");
 const modelJenisPanti = require("../models/jenis_panti");
-const { Sequelize } = require('sequelize');
+const { Sequelize, where, Op } = require('sequelize');
+const geolib = require('geolib');
 
 // ------------------------------------------------------
 const getList = async (req, res) => {
     try {
-      // const panti = await db.query('SELECT id_panti, nama_panti, alamat, geom, jumlah_anak, jumlah_pengurus, nama_pimpinan, nohp, email, sosmed, nama_status AS status, createdAt AS waktu_regis, updatedAt AS terakhir_update_profil, nama_jenis AS jenis FROM panti JOIN status ON panti.status_id = status.id_status JOIN jenis_panti ON panti.id_jenis = jenis_panti.id_jenis');
 
       const data_panti = await modelPanti.findAll({
         include: [ modelJenisPanti, modelStatus],
@@ -139,6 +139,41 @@ const cari = async (req, res) => {
   try {
     const { nama_panti, latitude, longitude } = req.query;
 
+    // Mencari panti asuhan berdasarkan nama
+    const panti = await modelPanti.findAll({
+      where: {nama_panti: {[Op.like]: `%${nama_panti}%`}}
+    })
+    
+    // const data = geolib.orderByDistance(
+    //   { latitude, longitude},
+    //   panti.map(data_panti => ({
+    //     latitude: data_panti.geom.coordinates[0],
+    //     longitude: data_panti.geom.coordinates[1],
+    //     nama_panti: data_panti.nama_panti,
+    //     id_panti: data_panti.id_panti,
+    //     // distance: data_panti.distance
+    //   }))
+    // )
+    
+    // Mengukur jarak antara koordinat user dengan koordinat panti
+    panti.forEach(data_panti => {
+      data_panti.jarak = geolib.getDistance(
+        {latitude, longitude},
+        {latitude: data_panti.geom.coordinates[0], longitude: data_panti.geom.coordinates[1] }
+      )
+    })
+
+    // Mengurutkan hasil pencarian berdasarkan jarak terdekat
+    panti.sort((a, b) => a.jarak - b.jarak)
+
+    const data = panti.map(dataa => ({
+      id_panti: dataa.id_panti,
+      nama_panti: dataa.nama_panti,
+      alamat: dataa.alamat,
+      koordinat : dataa.geom.coordinates
+    }))
+
+    res.status(200).json({error: false, count:panti.length, data});
 
   } catch (err) {
     res.status(500).json({ error:true, message: err });
@@ -194,8 +229,20 @@ const editDataDikelola = async (req, res) => {
       return res.status(401).json({ error: true, message: 'Id pantinya kosong' });
     }
 
-    // di cek dulu apakah id panti yang bersangkutan merupakan panti yang dikelola oleh admin
-    // ~~~~~~~~
+    // di cek dulu apakah id panti yang bersangkutan merupakan panti yang dikelola oleh admin tersebut
+    const trukah = await modelPanti.findOne({
+      include: [
+        {
+          model: modelUser, 
+          where: {email: req.user.email }
+        }
+      ],
+      where: {id_panti:id}
+    })
+
+    if (!trukah) {
+      return res.status(403).json({ error: true, message: 'Tidak bisa mengedit data ini!' });
+    }
 
     const {id_panti, nama_panti, alamat, latitude, longitude, jumlah_anak, jumlah_pengurus, nama_pimpinan, nohp, email, sosmed, jenis, status } = req.body;
 
