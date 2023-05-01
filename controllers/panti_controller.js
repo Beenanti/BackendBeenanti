@@ -3,6 +3,7 @@ const modelPanti = require("../models/panti");
 const modelStatus = require("../models/status");
 const modelUser = require("../models/user");
 const modelJenisPanti = require("../models/jenis_panti");
+const modelRiwayatVerifikasiPanti = require("../models/riwayat_verifikasi_panti")
 const { Sequelize, where, Op } = require('sequelize');
 const geolib = require('geolib');
 
@@ -93,6 +94,8 @@ const tambah = async (req, res) => {
       nama_pimpinan, nohp, email, sosmed, id_jenis: jenis, status_id: status
     })
 
+    const riwayat = await modelRiwayatVerifikasiPanti.create({id_panti, status_id: status, aksi: 'tambah', data: req.body})
+
     return res.status(201).json({ error: false, message: 'Berhasil tambah data panti!' });
 
   } catch (err) {
@@ -125,7 +128,30 @@ const edit = async (req, res) => {
     if (jenis) { data_baru.id_jenis = jenis; }
     if (status) { data_baru.status_id = status; }
 
-    const apdet = modelPanti.update(data_baru, {where: {id_panti:id}});
+    const apdet = await modelPanti.update(data_baru, {where: {id_panti:id}});
+
+    let status_panti;
+    if (!status) {
+      if (id_panti) {
+        const panti_apdet = await modelPanti.findByPk(id_panti)
+        status_panti = panti_apdet.status_id
+      } else {
+        const panti_apdet = await modelPanti.findByPk(id)
+        status_panti = panti_apdet.status_id
+      }
+    } else {
+      status_panti = status
+    }
+
+    let aidi_panti;
+    if (!id_panti) {
+      aidi_panti = id
+    } else {
+      aidi_panti = id_panti
+    }
+
+    // console.log(status_panti + '<- status  <<< <> >>>  id panti->' + aidi_panti)
+    const riwayat = await modelRiwayatVerifikasiPanti.create({id_panti: aidi_panti, status_id: status_panti, aksi: 'edit', data: data_baru})
     
     return res.status(200).json({error: false, message: 'berhasil update data', data_baru});
     
@@ -177,6 +203,7 @@ const cari = async (req, res) => {
 
   } catch (err) {
     res.status(500).json({ error:true, message: err });
+    console.error(err);
   }
 }
 
@@ -244,7 +271,7 @@ const editDataDikelola = async (req, res) => {
       return res.status(403).json({ error: true, message: 'Tidak bisa mengedit data ini!' });
     }
 
-    const {id_panti, nama_panti, alamat, latitude, longitude, jumlah_anak, jumlah_pengurus, nama_pimpinan, nohp, email, sosmed, jenis, status } = req.body;
+    const {id_panti, nama_panti, alamat, latitude, longitude, jumlah_anak, jumlah_pengurus, nama_pimpinan, nohp, email, sosmed, jenis } = req.body;
 
     const data_baru = {}
     if (id_panti) { data_baru.id_panti = id_panti; }
@@ -259,9 +286,18 @@ const editDataDikelola = async (req, res) => {
     if (email) { data_baru.email = email; }
     if (sosmed) { data_baru.sosmed = sosmed; }
     if (jenis) { data_baru.id_jenis = jenis; }
-    if (status) { data_baru.status_id = status; }
 
     const apdet = modelPanti.update(data_baru, {where: {id_panti:id}});
+
+    let aidi_panti;
+    if (!id_panti) {
+      aidi_panti = id
+    } else {
+      aidi_panti = id_panti
+    }
+
+    // console.log(status_panti + '<- status  <<< <> >>>  id panti->' + aidi_panti)
+    const riwayat = await modelRiwayatVerifikasiPanti.create({id_panti: aidi_panti, status_id: status_panti, aksi: 'edit', data: data_baru})
 
     return res.status(200).json({error: false, message: 'berhasil update data', data_baru});
 
@@ -273,7 +309,7 @@ const editDataDikelola = async (req, res) => {
 
 const riwayatVerifikasi = async (req, res) => {
   try {
-    
+    // ~~~~~~~
   } catch (err) {
     res.status(500).json({ error:true, message: err });
     console.error(err)

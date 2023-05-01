@@ -44,6 +44,8 @@ const panti = sequelize.define('panti',{
     sosmed: {
       type :  DataTypes.STRING,
     },
+    
+    // foreign key
     id_jenis: {
       type : DataTypes.STRING,
       allowNull: false
@@ -53,7 +55,7 @@ const panti = sequelize.define('panti',{
       allowNull: false
     } 
   }, {
-    tableName: 'panti'
+    freezeTableName: true
   });
 
 module.exports = panti;

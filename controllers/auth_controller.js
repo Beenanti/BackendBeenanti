@@ -40,8 +40,9 @@ const registerMobile = async (req,res) =>{
             return res.json({ error:true, message: 'Gagal menambahkan data' });
         }
 
-    } catch (error) {
-        res.status(500).json({ error:true, message: error });
+    } catch (err) {
+        res.status(500).json({ error:true, message: err });
+        console.error(err);
     }
 }
 
@@ -78,8 +79,9 @@ const registerAdminMaster = async (req,res) =>{
             return res.json({ error:false, message: 'Gagal menambahkan data' });
         }
 
-    } catch (error) {
-        res.status(500).json({ error:true, message: error });
+    } catch (err) {
+        res.status(500).json({ error:true, message: err });
+        console.error(err);
     }
 }
 
@@ -135,8 +137,9 @@ const login = async (req, res, next) =>{
             }
         });
 
-    } catch (error) {
-        res.status(500).json({ error: true, message: error});
+    } catch (err) {
+        res.status(500).json({ error: true, message: err});
+        console.error(err);
     }
 }
     
@@ -171,8 +174,9 @@ const logout = async (req, res) =>{
             res.status(200).json({ error: false, message: 'Logout berhasil' });
         });
         
-    } catch (error) {
-        res.status(500).json({ error: true, message: error });
+    } catch (err) {
+        res.status(500).json({ error: true, message: err });
+        console.error(err);
     }
 }
 

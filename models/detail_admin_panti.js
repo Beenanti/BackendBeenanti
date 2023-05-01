@@ -16,7 +16,7 @@ const detail_admin_panti = sequelize.define('detail_admin_panti',{
     }
   }, {
     timestamps: false, // Menonaktifkan kolom createdAt dan updatedAt
-    tableName: 'detail_admin_panti'
+    freezeTableName: true
   });
 
   module.exports = detail_admin_panti;

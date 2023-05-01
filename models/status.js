@@ -15,7 +15,7 @@ const status = sequelize.define('status',{
     } 
   }, {
     timestamps: false, // Menonaktifkan kolom createdAt dan updatedAt
-    tableName: 'status'
+    freezeTableName: true
   });
 
   module.exports = status;

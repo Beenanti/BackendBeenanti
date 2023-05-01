@@ -45,12 +45,14 @@ const user = sequelize.define('user',{
       type : DataTypes.ENUM('admin_master', 'user_mobile', 'admin_panti'),
       allowNull : false
     },
+
+    // foreign key
     status_id: {
       type : DataTypes.STRING,
       allowNull : false
     },
   }, {
-    tableName: 'user'
+    freezeTableName: true
   });
 
   module.exports = user;

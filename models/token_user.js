@@ -28,7 +28,7 @@ const token_user = sequelize.define('token_user',{
   
   }, {
     timestamps: false, // Menonaktifkan kolom createdAt dan updatedAt
-    tableName: 'token_user'
+    freezeTableName: true
   });
 
 module.exports = token_user;

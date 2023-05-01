@@ -23,7 +23,7 @@ const galeri = sequelize.define('galeri',{
     }
   }, {
     timestamps: false, // Menonaktifkan kolom createdAt dan updatedAt
-    tableName: 'galeri'
+    freezeTableName: true
   });
 
   module.exports = galeri;

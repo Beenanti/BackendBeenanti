@@ -42,8 +42,9 @@ const listDataUser = async (req,res, next) =>{
       res.status(200).json({error:false, count:data_user.length, data_user});
     }
 
-  } catch (error) {
-    res.status(500).json({ error:true, message: error });
+  } catch (err) {
+    res.status(500).json({ error:true, message: err });
+    console.error(err);
   }
 
 }
@@ -68,8 +69,9 @@ const listAdminPanti = async (req,res, next) =>{
     if (data_admin) {
       res.status(200).json({error:false, count:data_admin.length, data_admin});
     }
-  } catch (error) {
-    res.status(500).json({ error:true, message: error });
+  } catch (err) {
+    res.status(500).json({ error:true, message: err });
+    console.error(err);
   }
   
 }
@@ -88,8 +90,9 @@ const detailAdminPanti = async (req,res, next) =>{
       res.status(404).json({error:true, message:"user tidak ada"})
     }
 
-  } catch (error) {
-    res.status(500).json({ error:true, message: error });
+  } catch (err) {
+    res.status(500).json({ error:true, message: err });
+    console.error(err);
   }
 }
 
@@ -102,8 +105,9 @@ const lihatProfil = async (req,res, next) =>{
       res.status(404).json({error:true, message:"user tidak ada"})
     }
     
-  } catch (error) {
-      res.status(500).json({ error:true, message: error });
+  } catch (err) {
+    res.status(500).json({ error:true, message: err });
+    console.error(err);
   }
 
 }
@@ -133,6 +137,7 @@ const editProfil = async (req,res, next) =>{
 
   } catch (err) {
     res.status(500).json({ error:true, message: err });
+    console.error(err);
   }
 
 }
@@ -177,8 +182,9 @@ const registerAdminPanti = async (req,res, next) =>{
       // console.error(userBaru + "--------" + adminPantiBaru)
     }
 
-  } catch (error) {
-      res.status(500).json({ error:true, message: error });
+  } catch (err) {
+    res.status(500).json({ error:true, message: err });
+    console.error(err);
   }
 
 }
@@ -219,8 +225,9 @@ const editAdminPanti = async (req,res, next) =>{
       res.json({error: true, message: 'tidak ada data yang diupdate (email yang dimaksud tidak ada, atau body requestnya kosong)', data_baru:{user:dataBaru, admin_panti:updateAdminPanti}}).status(304);
     } 
 
-  } catch (error) {
-    res.status(500).json({ error:true, message: error });
+  } catch (err) {
+    res.status(500).json({ error:true, message: err });
+    console.error(err);
   }
 }
 
@@ -247,8 +254,9 @@ const tambahFotoAdminPanti = async (req,res, next) =>{
           deleteFile('./uploads/pp/' + foto)
       }
   
-    } catch (error) {
-        res.status(500).json({ error:true, message: error });
+    } catch (err) {
+      res.status(500).json({ error:true, message: err });
+      console.error(err);
     }
 }
 
@@ -284,8 +292,9 @@ const ubahPassword = async (req,res, next) =>{
       console.error("gagal")
     }
 
-  } catch (error) {
-    res.status(500).json({ error:true, message: error });
+  } catch (err) {
+    res.status(500).json({ error:true, message: err });
+    console.error(err);
   }
 }
 
@@ -305,8 +314,9 @@ const tambahFotoUser = async (req,res, next) =>{
         deleteFile('./uploads/pp/' + foto)
     }
 
-  } catch (error) {
-    res.status(500).json({ error:true, message: error });
+  } catch (err) {
+    res.status(500).json({ error:true, message: err });
+    console.error(err);
   }
 }
 

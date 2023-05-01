@@ -16,7 +16,7 @@ const jenis_panti = sequelize.define('jenis_panti',{
     } 
   }, {
     timestamps: false, // Menonaktifkan kolom createdAt dan updatedAt
-    tableName: 'jenis_panti'
+    freezeTableName: true
   });
 
   module.exports = jenis_panti;
