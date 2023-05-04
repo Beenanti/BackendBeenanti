@@ -7,6 +7,7 @@ router.get('/', pantiController.getList);
 router.get('/jenis-status', pantiController.statusJenisPanti);
 router.get('/kelola', authenticateUser, pantiController.lihatDataDikelola);
 router.get('/cari', pantiController.cari);
+router.get('/riwayat/:id_panti', pantiController.riwayatVerifikasi);
 router.get('/:id_panti', pantiController.detail);
 router.post('/tambah', pantiController.tambah);
 router.patch('/edit/:id_panti', pantiController.edit);

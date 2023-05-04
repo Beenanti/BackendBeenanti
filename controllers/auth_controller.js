@@ -121,7 +121,7 @@ const login = async (req, res, next) =>{
         });
         
         await modelToken.create({ 
-            user: email,
+            email_user: email,
             remember_token: token,
             ip_address: ip,
             createdAt: new Date(),

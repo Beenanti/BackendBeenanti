@@ -10,7 +10,7 @@ const token_user = sequelize.define('token_user',{
       defaultValue: DataTypes.UUIDV4,
       type: DataTypes.UUID
     },
-    user:{
+    email_user:{
       type : DataTypes.STRING(30),
       allowNull : false
     },

@@ -296,7 +296,6 @@ const editDataDikelola = async (req, res) => {
       aidi_panti = id_panti
     }
 
-    // console.log(status_panti + '<- status  <<< <> >>>  id panti->' + aidi_panti)
     const riwayat = await modelRiwayatVerifikasiPanti.create({id_panti: aidi_panti, status_id: status_panti, aksi: 'edit', data: data_baru})
 
     return res.status(200).json({error: false, message: 'berhasil update data', data_baru});
@@ -309,7 +308,25 @@ const editDataDikelola = async (req, res) => {
 
 const riwayatVerifikasi = async (req, res) => {
   try {
-    // ~~~~~~~
+    const id = req.params.id_panti
+
+    const riwayat = await modelRiwayatVerifikasiPanti.findAll({
+      include:[modelStatus],
+      where:{id_panti:id}, 
+      order: [['waktu', 'ASC']]
+    })
+
+    const data = riwayat.map((data_panti) => {
+      return {
+        waktu : data_panti.waktu,
+        aksi: data_panti.aksi,
+        status: data_panti.status.nama_status,
+        data: data_panti.data
+      }
+    })
+
+    res.status(200).json({error: false, count: riwayat.length, data});
+
   } catch (err) {
     res.status(500).json({ error:true, message: err });
     console.error(err)
