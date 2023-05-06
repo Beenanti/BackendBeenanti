@@ -33,8 +33,8 @@ panti.belongsToMany(user, {through : detail_admin_panti, foreignKey: 'id_panti'}
 status.hasMany(riwayat_verifikasi_panti, {foreignKey: 'status_id'})
 riwayat_verifikasi_panti.belongsTo(status, {foreignKey: 'status_id'})
 
-relawan.hasOne(user, {foreignKey: 'email_relawan'})
-user.belongsTo(relawan, {foreignKey: 'email_relawan'})
+user.hasOne(relawan, {foreignKey: 'email_relawan'})
+relawan.belongsTo(user, {foreignKey: 'email_relawan'})
 
 panti.hasMany(relawan, {foreignKey: 'id_panti'})
 relawan.belongsTo(panti, {foreignKey: 'id_panti'})

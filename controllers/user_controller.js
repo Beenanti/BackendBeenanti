@@ -1,4 +1,5 @@
 const modelUser = require("../models/user");
+const modelStatus = require("../models/status");
 const modelDetailAdminPanti = require("../models/detail_admin_panti");
 const { QueryTypes } = require('sequelize');
 const db = require('../config/db');
@@ -21,7 +22,7 @@ const deleteFile = (filePath) => {
 
 
 // ----------------------------------------------------
-const listDataUser = async (req,res, next) =>{
+const listDataUser = async (req,res) =>{
   try {
     const jumlah = parseInt(req.query.jumlah)||25;
     const halaman = parseInt(req.query.halaman)||1;
@@ -33,7 +34,7 @@ const listDataUser = async (req,res, next) =>{
     //   where: {role: "user_mobile"}
     // });
 
-    const data_user = await db.query('SELECT email, nik, nama, jenis_kelamin, alamat, tempat_lahir, tgl_lahir, no_hp, foto, pekerjaan, nama_status AS status, createdAt AS waktu_regis, updatedAt AS terakhir_update_profil FROM user JOIN status ON user.status_id = status.id_status WHERE user.role = ? LIMIT ?, ?', {
+    const data_user = await db.query('SELECT email, nik, nama, jenis_kelamin, alamat, tempat_lahir, tgl_lahir, no_hp, foto, pekerjaan, nama_status AS status, createdAt , updatedAt FROM user JOIN status ON user.status_id = status.id_status WHERE user.role = ? LIMIT ?, ?', {
       replacements: ['user_mobile', jumlah*(halaman-1), jumlah],
       type : QueryTypes.SELECT
     });
@@ -49,7 +50,7 @@ const listDataUser = async (req,res, next) =>{
 
 }
 
-const listAdminPanti = async (req,res, next) =>{
+const listAdminPanti = async (req,res) =>{
   try {
     const jumlah = parseInt(req.query.jumlah)||25;
     const halaman = parseInt(req.query.halaman)||1;
@@ -61,7 +62,7 @@ const listAdminPanti = async (req,res, next) =>{
     //   where: {role: "admin_panti"}
     // });
 
-    const data_admin = await db.query('SELECT email, nik, nama, jenis_kelamin, alamat, tempat_lahir, tgl_lahir, no_hp, foto, pekerjaan, nama_status AS status, createdAt AS waktu_regis, updatedAt AS terakhir_update_profil FROM user JOIN status ON user.status_id = status.id_status WHERE user.role = ? LIMIT ?, ?', {
+    const data_admin = await db.query('SELECT email, nik, nama, jenis_kelamin, alamat, tempat_lahir, tgl_lahir, no_hp, foto, pekerjaan, nama_status AS status, createdAt, updatedAt FROM user JOIN status ON user.status_id = status.id_status WHERE user.role = ? LIMIT ?, ?', {
       replacements: ['admin_panti', jumlah*(halaman-1), jumlah],
       type : QueryTypes.SELECT
     });
@@ -76,7 +77,7 @@ const listAdminPanti = async (req,res, next) =>{
   
 }
 
-const detailAdminPanti = async (req,res, next) =>{
+const detailAdminPanti = async (req,res) =>{
   try {
     const email = req.params.email
     if (email == null||email == undefined) {
@@ -96,13 +97,31 @@ const detailAdminPanti = async (req,res, next) =>{
   }
 }
 
-const lihatProfil = async (req,res, next) =>{
+const lihatProfil = async (req,res) =>{
   try {
-    const data = await modelUser.findByPk( req.user.email, {attributes: {exclude:['password', 'role']} } );
-    if (data) {
-      return res.status(200).json({ error: false, data});
+    const profil = await modelUser.findByPk( req.user.email, {
+      include: modelStatus,
+      attributes: {exclude:['password', 'role', 'status_id']},
+    } );
+    
+    if (profil) {
+      return res.status(200).json({ error: false, profil: {
+        email: profil.email,
+        nik: profil.nik,
+        nama: profil.nama,
+        jenis_kelamin: profil.jenis_kelamin,
+        alamat: profil.alamat,
+        tempat_lahir: profil.tempat_lahir,
+        tgl_lahir: profil.tgl_lahir,
+        no_hp: profil.no_hp,
+        foto: profil.foto,
+        pekerjaan: profil.pekerjaan,
+        createdAt: profil.createdAt,
+        updatedAt: profil.updatedAt,
+        status: profil.status.nama_status,
+      }});
     } else {
-      res.status(404).json({error:true, message:"user tidak ada"})
+      res.status(404).json({error:true, message:"User tidak ada"})
     }
     
   } catch (err) {
@@ -112,7 +131,7 @@ const lihatProfil = async (req,res, next) =>{
 
 }
 
-const editProfil = async (req,res, next) =>{
+const editProfil = async (req,res) =>{
   try {
     const {email, nik, nama, jenis_kelamin, alamat, tempat_lahir, tgl_lahir, no_hp, pekerjaan} = req.body;
 
@@ -142,7 +161,7 @@ const editProfil = async (req,res, next) =>{
 
 }
 
-const registerAdminPanti = async (req,res, next) =>{
+const registerAdminPanti = async (req,res) =>{
   try {
     const {email, password, konfirmasi_password } = req.body;
 
@@ -189,7 +208,7 @@ const registerAdminPanti = async (req,res, next) =>{
 
 }
 
-const editAdminPanti = async (req,res, next) =>{
+const editAdminPanti = async (req,res) =>{
   try {
     const emailAdmin = req.params.email;
     if (emailAdmin == null||emailAdmin == undefined) {
@@ -231,7 +250,7 @@ const editAdminPanti = async (req,res, next) =>{
   }
 }
 
-const tambahFotoAdminPanti = async (req,res, next) =>{
+const tambahFotoAdminPanti = async (req,res) =>{
     try {
       const email = req.params.email;
 
@@ -260,7 +279,7 @@ const tambahFotoAdminPanti = async (req,res, next) =>{
     }
 }
 
-const ubahPassword = async (req,res, next) =>{
+const ubahPassword = async (req,res) =>{
   try {
     const {sandi_lama, sandi_baru, konfirmasi_sandi_baru} = req.body;
 
@@ -298,7 +317,7 @@ const ubahPassword = async (req,res, next) =>{
   }
 }
 
-const tambahFotoUser = async (req,res, next) =>{
+const tambahFotoUser = async (req,res) =>{
   try {
     const foto = req.file.filename;
     if (!foto) {

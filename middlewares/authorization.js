@@ -8,4 +8,11 @@ const isMiminMaster = async (req,res, next) =>{
     next();
 }
 
-module.exports = {isMiminMaster};
+const isMiminPanti = async (req,res, next) =>{
+    if (req.user.role_user != "admin_panti" ) {
+        return res.status(403).json({ error: true, message: 'Anda tidak memiliki hak akses' });
+    }
+    next();
+}
+
+module.exports = {isMiminMaster, isMiminPanti};
