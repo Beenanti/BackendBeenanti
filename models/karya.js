@@ -8,23 +8,25 @@ const karya = sequelize.define('karya',{
     id_karya: {
         allowNull: false,
         primaryKey: true,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(3)
     },
     nama_karya: {
         allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(30)
     },
     nama_anak: {
         allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(30)
     },
     link_karya: {
         allowNull: false,
         type: DataTypes.TEXT
     },
+
+    // foreign key
     id_panti: {
         allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(3)
     },
 
 }, {

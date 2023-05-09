@@ -8,11 +8,11 @@ const kunjungan_und = sequelize.define('kunjungan_und',{
     id_und: {
         allowNull: false,
         primaryKey: true,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(3)
     },
     nama_und: {
         allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(30)
     },
     tanggal: {
         allowNull: false,
@@ -24,7 +24,7 @@ const kunjungan_und = sequelize.define('kunjungan_und',{
     },
     durasi: {
         allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(10)
     },
     detail: {
         allowNull: false,
@@ -32,21 +32,21 @@ const kunjungan_und = sequelize.define('kunjungan_und',{
     },
     berkas: {
         allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(30)
     },
 
     // foreign key
     id_panti: {
         allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(3)
     },
     email: {
         allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(30)
     },
     status_id: {
         allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(1)
     },
 
 }, {

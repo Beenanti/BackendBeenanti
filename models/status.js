@@ -7,10 +7,10 @@ const status = sequelize.define('status',{
     id_status: {
       allowNull: false,
       primaryKey: true,
-      type: DataTypes.STRING
+      type: DataTypes.STRING(1)
     },
     nama_status:{
-      type : DataTypes.STRING,
+      type : DataTypes.STRING(10),
       allowNull : false
     } 
   }, {

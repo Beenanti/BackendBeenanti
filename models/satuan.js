@@ -8,10 +8,10 @@ const satuan = sequelize.define('satuan',{
     id_satuan: {
         allowNull: false,
         primaryKey: true,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(2)
     },
     nama_satuan: {
-        type : DataTypes.STRING,
+        type : DataTypes.STRING(20),
         allowNull: false
     }
 

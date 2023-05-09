@@ -7,7 +7,8 @@ const galeri = sequelize.define('galeri',{
     id_gambar: {
       allowNull: false,
       primaryKey: true,
-      type: DataTypes.UUID
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
     },
     id_panti: {
       allowNull: false,

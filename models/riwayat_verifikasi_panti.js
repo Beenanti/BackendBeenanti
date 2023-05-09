@@ -13,11 +13,11 @@ const riwayat_verifikasi_panti = sequelize.define('riwayat_verifikasi_panti',{
     },
     id_panti: {
         allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(3)
     },
     status_id: {
         allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(1)
     },
     aksi: {
         allowNull: false,

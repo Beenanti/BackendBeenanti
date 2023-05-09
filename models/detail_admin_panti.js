@@ -12,7 +12,7 @@ const detail_admin_panti = sequelize.define('detail_admin_panti',{
     email:{
       allowNull: false,
       primaryKey: true,
-      type: DataTypes.STRING(16)
+      type: DataTypes.STRING(30)
     }
   }, {
     timestamps: false, // Menonaktifkan kolom createdAt dan updatedAt

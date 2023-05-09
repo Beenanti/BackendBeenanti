@@ -8,11 +8,11 @@ const relawan = sequelize.define('relawan',{
     id_relawan: {
         allowNull: false,
         primaryKey: true,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(3)
     },
     bidang: {
         allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(20)
     },
     tanggal: {
         allowNull: false,
@@ -24,11 +24,11 @@ const relawan = sequelize.define('relawan',{
     },
     durasi: {
         allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(10)
     },
     berkas: {
         allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(30)
     },
     detail: {
         allowNull: false,
@@ -38,15 +38,15 @@ const relawan = sequelize.define('relawan',{
     // foreign key
     id_panti: {
         allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(3)
     },
     email_relawan: {
         allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(30)
     },
     status_id: {
         allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(1)
     },
 
 }, {
