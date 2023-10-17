@@ -74,3 +74,9 @@ token_user.belongsTo(user, {foreignKey: 'email_user'})
 
 panti.hasMany(galeri, {foreignKey: 'id_panti'})
 galeri.belongsTo(panti, {foreignKey: 'id_panti'})
+
+status.hasMany(relawan, {foreignKey: 'status_id'})
+relawan.belongsTo(status, {foreignKey: 'status_id'})
+
+status.hasMany(kunjungan_und, {foreignKey: 'status_id'})
+kunjungan_und.belongsTo(status, {foreignKey: 'status_id'})

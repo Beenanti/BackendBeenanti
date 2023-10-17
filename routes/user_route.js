@@ -1,9 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/user_controller");
-const {upload_pp} = require('../middlewares/upload_file')
+const createMulterStorage = require('../middlewares/upload_file')
 const {isMiminMaster} = require('../middlewares/authorization')
 const {authenticateUser} = require('../middlewares/authentication')
+
+const upload_pp = createMulterStorage(
+    '../uploads/pp',                            //folder destinasi
+    1024 * 1024 * 2,                            //batas ukuran file dalam bytes
+    ['image/png', 'image/jpg', 'image/jpeg']    //tipe mime file
+);
 
 router.get('/profil', authenticateUser, userController.lihatProfil);
 router.patch('/profil/edit', authenticateUser, userController.editProfil);

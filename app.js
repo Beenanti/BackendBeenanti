@@ -12,9 +12,11 @@ app.use(express.static('uploads'));
 
 
 //panggil routes
+app.use("/user", require('./routes/user_route'));
 app.use("/auth", require('./routes/auth_route'));
 app.use("/panti", require('./routes/panti_route'));
-app.use("/user", require('./routes/user_route'));
+app.use("/relawan", require('./routes/relawan_route'));
+app.use("/kunjungan", require('./routes/kunjungan_route'));
 
 //halaman root
 app.get('/', (req, res) => {

@@ -5,7 +5,7 @@ const { QueryTypes } = require('sequelize');
 const db = require('../config/db');
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 
 
 // fungsi untuk menghapus file

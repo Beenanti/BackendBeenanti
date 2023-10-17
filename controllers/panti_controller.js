@@ -1,4 +1,5 @@
 require("../models/associations");
+const { nanoid } = require('nanoid');
 const modelPanti = require("../models/panti");
 const modelStatus = require("../models/status");
 const modelUser = require("../models/user");
@@ -85,16 +86,17 @@ const detail = async (req, res) => {
 
 const tambah = async (req, res) => {
   try {
-    const {id_panti, nama_panti, alamat, latitude, longitude, jumlah_anak, jumlah_pengurus, nama_pimpinan, nohp, email, sosmed, jenis } = req.body;
-
-    const baru = await modelPanti.create({
+    const { nama_panti, alamat, latitude, longitude, jumlah_anak, jumlah_pengurus, nama_pimpinan, nohp, email, sosmed, jenis } = req.body;
+    const id_panti = nanoid(3);
+    
+    await modelPanti.create({
       id_panti, nama_panti, alamat,
       geom: { type: 'Point', coordinates: [latitude, longitude] },
       jumlah_anak: parseInt(jumlah_anak) , jumlah_pengurus : parseInt(jumlah_pengurus),
       nama_pimpinan, nohp, email, sosmed, id_jenis: jenis, status_id: '1'
     })
 
-    const riwayat = await modelRiwayatVerifikasiPanti.create({id_panti, status_id: '1', aksi: 'tambah', data: req.body})
+    await modelRiwayatVerifikasiPanti.create({id_panti, status_id: '1', aksi: 'tambah', data: req.body})
 
     return res.status(201).json({ error: false, message: 'Berhasil tambah data panti!' });
 
