@@ -7,7 +7,7 @@ const {authenticateUser} = require('../middlewares/authentication')
 
 const upload_pp = createMulterStorage(
     '../uploads/pp',                            //folder destinasi
-    1024 * 1024 * 2,                            //batas ukuran file dalam bytes
+    1024 * 1024 * 3,                            //batas ukuran file dalam bytes
     ['image/png', 'image/jpg', 'image/jpeg']    //tipe mime file
 );
 

@@ -4,21 +4,7 @@ const modelDetailAdminPanti = require("../models/detail_admin_panti");
 const { QueryTypes } = require('sequelize');
 const db = require('../config/db');
 const bcrypt = require('bcryptjs');
-const fs = require('fs');
-// const jwt = require('jsonwebtoken');
-
-
-// fungsi untuk menghapus file
-const deleteFile = (filePath) => {
-    fs.unlink(filePath, (err) => {
-      if (err) {
-        console.error(err)
-        throw new Error('Failed to delete file');
-      } else{
-        console.log("berhasil hapus data")
-      }
-    });
-};
+const {deleteFile} = require('../middlewares/functions')
 
 
 // ----------------------------------------------------

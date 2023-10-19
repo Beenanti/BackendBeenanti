@@ -14,16 +14,22 @@ const galeri = sequelize.define('galeri',{
       allowNull: false,
       type: DataTypes.STRING(3)
     },
+    nama:{
+      allowNull: false,
+      type: DataTypes.STRING(50)
+    },
     url_gambar:{
       allowNull: false,
       type: DataTypes.STRING
     },
     deskripsi:{
-      allowNull: false,
       type: DataTypes.STRING
+    },
+    username:{
+      allowNull: false,
+      type: DataTypes.STRING(30),
     }
   }, {
-    timestamps: false, // Menonaktifkan kolom createdAt dan updatedAt
     freezeTableName: true
   });
 

@@ -3,10 +3,12 @@ const { nanoid } = require('nanoid');
 const modelPanti = require("../models/panti");
 const modelStatus = require("../models/status");
 const modelUser = require("../models/user");
+const modelGaleri = require("../models/galeri");
 const modelJenisPanti = require("../models/jenis_panti");
 const modelRiwayatVerifikasiPanti = require("../models/riwayat_verifikasi_panti")
 const { Sequelize, where, Op } = require('sequelize');
 const geolib = require('geolib');
+const {deleteFile} = require('../middlewares/functions')
 
 // ------------------------------------------------------
 const getList = async (req, res) => {
@@ -41,8 +43,8 @@ const getList = async (req, res) => {
       res.status(200).json({error: false, count:data_panti.length, data});
       
     } catch (err) {
-      res.status(500).json({ error:true, message: err });
       console.error(err)
+      res.status(500).json({ error:true, message: err });
     }
 };
 
@@ -79,8 +81,8 @@ const detail = async (req, res) => {
     }
 
   } catch (err) {
-    res.status(500).json({ error:true, message: err });
     console.error(err)
+    res.status(500).json({ error:true, message: err });
   }
 }
 
@@ -101,8 +103,8 @@ const tambah = async (req, res) => {
     return res.status(201).json({ error: false, message: 'Berhasil tambah data panti!' });
 
   } catch (err) {
-    res.status(500).json({ error:true, message: err });
     console.error(err)
+    res.status(500).json({ error:true, message: err });
   }
 }
 
@@ -130,7 +132,7 @@ const edit = async (req, res) => {
     if (jenis) { data_baru.id_jenis = jenis; }
     if (status) { data_baru.status_id = status; }
 
-    const apdet = await modelPanti.update(data_baru, {where: {id_panti:id}});
+    await modelPanti.update(data_baru, {where: {id_panti:id}});
 
     let status_panti;
     if (!status) {
@@ -158,8 +160,8 @@ const edit = async (req, res) => {
     return res.status(200).json({error: false, message: 'berhasil update data', data_baru});
     
   } catch (err) {
-    res.status(500).json({ error:true, message: err });
     console.error(err)
+    res.status(500).json({ error:true, message: err });
   }
 }
 
@@ -171,17 +173,6 @@ const cari = async (req, res) => {
     const panti = await modelPanti.findAll({
       where: {nama_panti: {[Op.like]: `%${nama_panti}%`}}
     })
-    
-    // const data = geolib.orderByDistance(
-    //   { latitude, longitude},
-    //   panti.map(data_panti => ({
-    //     latitude: data_panti.geom.coordinates[0],
-    //     longitude: data_panti.geom.coordinates[1],
-    //     nama_panti: data_panti.nama_panti,
-    //     id_panti: data_panti.id_panti,
-    //     // distance: data_panti.distance
-    //   }))
-    // )
     
     // Mengukur jarak antara koordinat user dengan koordinat panti
     panti.forEach(data_panti => {
@@ -204,8 +195,8 @@ const cari = async (req, res) => {
     res.status(200).json({error: false, count:panti.length, data});
 
   } catch (err) {
-    res.status(500).json({ error:true, message: err });
     console.error(err);
+    res.status(500).json({ error:true, message: err });
   }
 }
 
@@ -246,8 +237,8 @@ const lihatDataDikelola = async (req, res) => {
     res.status(200).json({error: false, count:data_panti.length, data});
 
   } catch (err) {
-    res.status(500).json({ error:true, message: err });
     console.error(err)
+    res.status(500).json({ error:true, message: err });
   }
 }
 
@@ -289,7 +280,7 @@ const editDataDikelola = async (req, res) => {
     if (sosmed) { data_baru.sosmed = sosmed; }
     if (jenis) { data_baru.id_jenis = jenis; }
 
-    const apdet = modelPanti.update(data_baru, {where: {id_panti:id}});
+    modelPanti.update(data_baru, {where: {id_panti:id}});
 
     let aidi_panti;
     if (!id_panti) {
@@ -298,25 +289,25 @@ const editDataDikelola = async (req, res) => {
       aidi_panti = id_panti
     }
 
-    const riwayat = await modelRiwayatVerifikasiPanti.create({id_panti: aidi_panti, status_id: trukah.status_id, aksi: 'edit', data: data_baru})
+    await modelRiwayatVerifikasiPanti.create({id_panti: aidi_panti, status_id: trukah.status_id, aksi: 'edit', data: data_baru})
 
     return res.status(200).json({error: false, message: 'berhasil update data', data_baru});
 
   } catch (err) {
-    res.status(500).json({ error:true, message: err });
     console.error(err)
+    res.status(500).json({ error:true, message: err });
   }
 }
 
 const riwayatVerifikasi = async (req, res) => {
   try {
-    const id = req.params.id_panti
+    const id = req.params.id_panti;
 
     const riwayat = await modelRiwayatVerifikasiPanti.findAll({
       include:[modelStatus],
       where:{id_panti:id}, 
       order: [['waktu', 'ASC']]
-    })
+    });
 
     const data = riwayat.map((data_panti) => {
       return {
@@ -325,28 +316,59 @@ const riwayatVerifikasi = async (req, res) => {
         status: data_panti.status.nama_status,
         data: data_panti.data
       }
-    })
+    });
 
     res.status(200).json({error: false, count: riwayat.length, data});
 
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error:true, message: err });
-    console.error(err)
   }
 }
 
-const statusJenisPanti = async (req, res) => {
-  try {
-    const status = await modelStatus.findAll();
-    const jenis_panti = await modelJenisPanti.findAll();
+const uploadGaleri = async (req, res) => {
+  const id_panti = req.params.id_panti;
+  const galeri = req.files;
+  const username = req.user.email;
 
-    return res.status(200).json({error: false, status, jenis_panti});
+  try {
+
+    const panti = await modelPanti.findByPk(id_panti);
+    if (!panti) {
+      return res.status(404).json({ error: true, message: 'Panti tidak ditemukan' });
+    }
+
+    if (galeri==''||galeri==null) {
+      return res.status(400).json({ error: true, message: 'Foto tidak ada' });
+    }
+
+    galeri.forEach(foto => {
+      modelGaleri.create({
+        id_panti, username,
+        nama : req.body.nama,
+        url_gambar : foto.filename,
+        deskripsi : req.body.deskripsi,
+      })
+      .then(() => console.log('Berhasil menyimpan ke database'))
+      .catch(error => {
+        console.error(error);
+        deleteFile(foto.path)
+        next(error);
+      });;
+    });
+
+    return res.status(200).json({error: false, message: 'Berhasil menyimpan ke database'});
 
   } catch (err) {
+
+    galeri.forEach(foto => {
+      deleteFile(foto.path)
+    });
+
+    console.error(err);
     res.status(500).json({ error:true, message: err });
-    console.error(err)
   }
 }
 
 
-module.exports = {getList, detail, tambah, edit, cari, lihatDataDikelola, editDataDikelola, riwayatVerifikasi, statusJenisPanti};
+module.exports = {getList, detail, tambah, edit, cari, lihatDataDikelola, editDataDikelola, riwayatVerifikasi, uploadGaleri};

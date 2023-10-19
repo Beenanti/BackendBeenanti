@@ -80,3 +80,6 @@ relawan.belongsTo(status, {foreignKey: 'status_id'})
 
 status.hasMany(kunjungan_und, {foreignKey: 'status_id'})
 kunjungan_und.belongsTo(status, {foreignKey: 'status_id'})
+
+user.hasMany(galeri, {foreignKey: 'username'})
+galeri.belongsTo(user, {foreignKey: 'username'})

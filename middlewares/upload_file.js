@@ -21,7 +21,7 @@ function createMulterStorage(destination, maxFileSize, allowedMimeTypes) {
       }
   }
 
-  const upload = multer({
+  return multer({
       storage: fileStorage,
       limits: {
           fileSize: maxFileSize
@@ -29,7 +29,6 @@ function createMulterStorage(destination, maxFileSize, allowedMimeTypes) {
       fileFilter: fileFilter
   })
 
-  return upload;
 }
 
 module.exports = createMulterStorage;
