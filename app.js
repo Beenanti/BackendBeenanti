@@ -1,5 +1,5 @@
 const express = require('express')
-const path = require('path');
+// const path = require('path');
 const cors = require('cors')
 const app = express()
 require('dotenv').config()
@@ -17,6 +17,8 @@ app.use("/auth", require('./routes/auth_route'));
 app.use("/panti", require('./routes/panti_route'));
 app.use("/relawan", require('./routes/relawan_route'));
 app.use("/kunjungan", require('./routes/kunjungan_route'));
+app.use("/kebutuhan", require("./routes/kebutuhan_route"));
+app.use("/donasi", require("./routes/donasi_route"));
 
 //halaman root
 app.get('/', (req, res) => {

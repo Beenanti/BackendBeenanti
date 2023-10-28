@@ -2,20 +2,23 @@ require("../models/associations");
 const { nanoid } = require('nanoid');
 const modelPanti = require("../models/panti");
 const modelStatus = require("../models/status");
+const modelSatuan = require("../models/satuan");
 const modelUser = require("../models/user");
 const modelGaleri = require("../models/galeri");
+const modelKebutuhan = require("../models/kebutuhan_panti");
+const modelJenisKebutuhan = require("../models/jenis_kebutuhan")
 const modelJenisPanti = require("../models/jenis_panti");
 const modelRiwayatVerifikasiPanti = require("../models/riwayat_verifikasi_panti")
-const { Sequelize, where, Op } = require('sequelize');
+const {where, Op } = require('sequelize');
 const geolib = require('geolib');
-const {deleteFile} = require('../middlewares/functions')
+const {deleteFile} = require('../middlewares/functions');
 
 // ------------------------------------------------------
 const getList = async (req, res) => {
     try {
 
       const data_panti = await modelPanti.findAll({
-        include: [ modelJenisPanti, modelStatus],
+        include: [ modelJenisPanti, modelStatus, modelGaleri],
         order: [
           ['createdAt', 'ASC']
         ],
@@ -35,8 +38,18 @@ const getList = async (req, res) => {
           sosmed: panti.sosmed,
           jenis: panti.jenis_panti.nama_jenis,
           status: panti.status.nama_status,
+          galeri : panti.galeris.map((galeri) => ({
+            id_gambar : galeri.id_gambar,
+            nama : galeri.nama,
+            url : galeri.url_gambar,
+            deskripsi : galeri.deskripsi,
+            user_upload : galeri.username,
+            createdAt : galeri.createdAt,
+            updatedAt : galeri.updatedAt,
+
+          })),
           createdAt : panti.createdAt,
-          updatedAt : panti.updatedAt
+          updatedAt : panti.updatedAt,
         }
       })
 
@@ -56,7 +69,11 @@ const detail = async (req, res) => {
     }
 
     const data_panti = await modelPanti.findByPk(id, {
-      include: [{model: modelJenisPanti}, {model: modelStatus}]
+      include: [ modelJenisPanti, modelStatus, modelGaleri, 
+        { model : modelKebutuhan,
+          include : [modelJenisKebutuhan, modelSatuan]
+        }
+      ]
     })
 
     if (data_panti) {
@@ -73,6 +90,25 @@ const detail = async (req, res) => {
         sosmed: data_panti.sosmed,
         jenis: data_panti.jenis_panti.nama_jenis,
         status: data_panti.status.nama_status,
+        galeri: data_panti.galeris.map((galeri) => ({
+          id_gambar : galeri.id_gambar,
+          nama : galeri.nama,
+          url : galeri.url_gambar,
+          deskripsi : galeri.deskripsi,
+          user_upload : galeri.username,
+          createdAt : galeri.createdAt,
+          updatedAt : galeri.updatedAt,
+
+        })),
+        kebutuhan : data_panti.kebutuhan_pantis.map((kebutuhan => ({
+          id_kebutuhan: kebutuhan.id_kebutuhan,
+          nama: kebutuhan.nama_kebutuhan,
+          jumlah : kebutuhan.jumlah_kebutuhan,
+          satuan : kebutuhan.satuan.nama_satuan,
+          jenis : kebutuhan.jenis_kebutuhan.nama_jenis_kebutuhan,
+          createdAt : kebutuhan.createdAt,
+          updatedAt : kebutuhan.updatedAt
+        }))),
         createdAt : data_panti.createdAt,
         updatedAt : data_panti.updatedAt
       }})
@@ -155,7 +191,7 @@ const edit = async (req, res) => {
     }
 
     // console.log(status_panti + '<- status  <<< <> >>>  id panti->' + aidi_panti)
-    const riwayat = await modelRiwayatVerifikasiPanti.create({id_panti: aidi_panti, status_id: status_panti, aksi: 'edit', data: data_baru})
+    await modelRiwayatVerifikasiPanti.create({id_panti: aidi_panti, status_id: status_panti, aksi: 'edit', data: data_baru})
     
     return res.status(200).json({error: false, message: 'berhasil update data', data_baru});
     
