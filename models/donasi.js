@@ -44,6 +44,10 @@ const donasi = sequelize.define('donasi',{
         type : DataTypes.STRING(2),
         allowNull: false
     },
+    id_status:{
+        type : DataTypes.STRING(1),
+        allowNull : false
+    } 
 
 }, {
     freezeTableName: true

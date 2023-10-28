@@ -83,3 +83,6 @@ kunjungan_und.belongsTo(status, {foreignKey: 'status_id'})
 
 user.hasMany(galeri, {foreignKey: 'username'})
 galeri.belongsTo(user, {foreignKey: 'username'})
+
+status.hasMany(donasi, { foreignKey: "id_status" });
+donasi.belongsTo(status, { foreignKey: "id_status" });
