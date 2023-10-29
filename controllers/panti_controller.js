@@ -12,6 +12,7 @@ const modelRiwayatVerifikasiPanti = require("../models/riwayat_verifikasi_panti"
 const {where, Op } = require('sequelize');
 const geolib = require('geolib');
 const {deleteFile} = require('../middlewares/functions');
+require('dotenv').config()
 
 // ------------------------------------------------------
 const getList = async (req, res) => {
@@ -41,7 +42,7 @@ const getList = async (req, res) => {
           galeri : panti.galeris.map((galeri) => ({
             id_gambar : galeri.id_gambar,
             nama : galeri.nama,
-            url : galeri.url_gambar,
+            url : `${process.env.APP_URL}/galeri/${encodeURIComponent(galeri.url_gambar)}`,
             deskripsi : galeri.deskripsi,
             user_upload : galeri.username,
             createdAt : galeri.createdAt,
@@ -93,7 +94,7 @@ const detail = async (req, res) => {
         galeri: data_panti.galeris.map((galeri) => ({
           id_gambar : galeri.id_gambar,
           nama : galeri.nama,
-          url : galeri.url_gambar,
+          url : `${process.env.APP_URL}/galeri/${encodeURIComponent(galeri.url_gambar)}`,
           deskripsi : galeri.deskripsi,
           user_upload : galeri.username,
           createdAt : galeri.createdAt,
