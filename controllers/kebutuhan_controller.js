@@ -125,7 +125,7 @@ const tambahkebpanti = async (req, res) => {
             where: {id_panti}
           })
 
-          console.log(trukah + "hbubu")
+        //   console.log(trukah + "hbubu")
 
         const id_kebutuhan = nanoid(2);
         const baru = await modelKebutuhan.create({

@@ -22,6 +22,10 @@ const karya = sequelize.define('karya',{
         allowNull: false,
         type: DataTypes.TEXT
     },
+    url_gambar:{
+        allowNull: false,
+        type: DataTypes.STRING
+      },
 
     // foreign key
     id_panti: {
