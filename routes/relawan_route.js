@@ -6,14 +6,15 @@ const relawanController = require("../controllers/relawan_controller");
 const createMulterStorage = require('../middlewares/upload_file')
 
 const upload_berkas_relawan = createMulterStorage(
-    '../uploads/berkas_kunjungan',                              //destinasi folder
-    1024 * 1024 * 5,                                            //batas ukuran file
+    '../uploads/berkas_relawan',                              //destinasi folder
+    1024 * 1024 * 3,                                            //batas ukuran file
     ['image/png', 'image/jpg', 'image/jpeg', 'application/pdf'] //tipe mime file
 );
 
-router.post('/tambah', authenticateUser, upload_berkas_relawan.single('berkas'), relawanController.pengajuan);
-router.get('/riwayat', relawanController.riwayat);
-router.get('/data', relawanController.lihat_data);
+router.get('/', relawanController.lihatData);
+router.get('/panti/:id_panti', relawanController.lihatDataPanti);
+router.post('/request', authenticateUser, upload_berkas_relawan.single('berkas'), relawanController.pengajuan);
 router.post('/verifikasi', relawanController.verifikasi);
+router.patch('/:id_relawan/verifikasi', relawanController.verifikasi);
 
 module.exports = router

@@ -65,7 +65,7 @@ const getList = async (req, res) => {
 const detail = async (req, res) => {
   try {
     const id = req.params.id_panti
-    if (id == null||id == undefined) {
+    if (id == null||id == undefined||id== ':id_panti') {
       return res.status(401).json({ error: true, message: 'Pilih panti terlebih dahulu' });
     }
 
@@ -148,7 +148,7 @@ const tambah = async (req, res) => {
 const edit = async (req, res) => {
   try {
     const id = req.params.id_panti;
-    if (id == null||id == undefined) {
+    if (id == null||id == undefined||id== ':id_panti') {
       return res.status(401).json({ error: true, message: 'id pantinya kosong' });
     }
 
@@ -246,8 +246,7 @@ const lihatDataDikelola = async (req, res) => {
           model: modelUser,
           where: {email: req.user.email }
         },
-        {model: modelJenisPanti}, 
-        {model: modelStatus}
+         modelJenisPanti, modelStatus
       ],
       order: [ ['createdAt', 'ASC'] ],
     })

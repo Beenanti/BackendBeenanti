@@ -34,6 +34,9 @@ const kunjungan_und = sequelize.define('kunjungan_und',{
         allowNull: false,
         type: DataTypes.STRING(30)
     },
+    jadikah: {
+        type: DataTypes.BOOLEAN
+    },
 
     // foreign key
     id_panti: {

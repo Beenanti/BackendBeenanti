@@ -7,7 +7,7 @@ const {isMiminMaster, isMiminPanti} = require('../middlewares/authorization')
 
 const upload_buktidonasi = createMulterStorage(
     '../uploads/bukti_donasi',                                  //destinasi folder
-    1024 * 1024 * 5,                                            //batas ukuran file
+    1024 * 1024 * 3,                                            //batas ukuran file
     ['image/png', 'image/jpg', 'image/jpeg', 'application/pdf'] //tipe mime file
 );
 
