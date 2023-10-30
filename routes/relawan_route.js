@@ -13,6 +13,7 @@ const upload_berkas_relawan = createMulterStorage(
 
 router.get('/', relawanController.lihatData);
 router.get('/panti/:id_panti', relawanController.lihatDataPanti);
+router.get('/:id_relawan', relawanController.detail);
 router.post('/request', authenticateUser, upload_berkas_relawan.single('berkas'), relawanController.pengajuan);
 router.post('/verifikasi', relawanController.verifikasi);
 router.patch('/:id_relawan/verifikasi', relawanController.verifikasi);

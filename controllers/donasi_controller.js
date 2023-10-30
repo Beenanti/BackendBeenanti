@@ -43,7 +43,7 @@ const tambah = async (req, res) => {
         });
 
         return res
-            .status(201)
+            .status(200)
             .json({ error: false, message: "Berhasil tambah data donasi!" });
     } catch (err) {
         res.status(500).json({ error: true, message: err });

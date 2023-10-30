@@ -99,7 +99,7 @@ const detail = async (req, res) => {
         const id = req.params.id_kunjungan;
 
         if (id == null||id == undefined) {
-            return res.status(401).json({ error: true, message: 'Pilih panti terlebih dahulu' });
+            return res.status(401).json({ error: true, message: 'Pilih kunjungan terlebih dahulu' });
         }
 
         const dataKunjungan = await modelKunjungan.findByPk(id, {

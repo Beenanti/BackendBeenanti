@@ -62,6 +62,42 @@ const lihatData = async (req, res) => {     //keseluruhan
     }
 }
 
+const detail = async (req, res) => {
+    try {
+        const id = req.params.id_relawan;
+
+        if (id == null||id == undefined) {
+            return res.status(401).json({ error: true, message: 'Pilih relawan terlebih dahulu' });
+        }
+
+        const dataRelawan = await modelRelawan.findByPk(id, {
+            include: [ modelStatus, modelPanti ]
+        })
+
+        if (dataRelawan) {
+            return res.status(200).json({error: false, data: {
+              user: dataRelawan.email_relawan,
+              panti: dataRelawan.panti.nama_panti,
+              bidang: dataRelawan.bidang,
+              tanggal: dataRelawan.tanggal,
+              waktu: dataRelawan.waktu,
+              durasi: dataRelawan.durasi,
+              status: dataRelawan.status.nama_status,
+              detail : dataRelawan.detail,
+              berkas: `${process.env.APP_URL}/berkas_Relawan/${encodeURIComponent(dataRelawan.berkas)}`,
+              createdAt : dataRelawan.createdAt,
+              updatedAt : dataRelawan.updatedAt
+            }})
+          } else {
+            res.status(404).json({error:true, message:"relawan tidak ada"})
+          }
+
+    } catch (error) {
+        res.status(500).json({ error:true, message: error });
+        console.error(error)
+    }
+}
+
 const lihatDataPanti = async (req, res) => {        //relawan per panti
     try {
         const id = req.params.id_panti
@@ -127,4 +163,4 @@ const verifikasi = async (req, res) => {
 }
 
 
-module.exports = {pengajuan, lihatData, lihatDataPanti, verifikasi}
+module.exports = {pengajuan, lihatData, lihatDataPanti, detail, verifikasi}
