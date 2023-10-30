@@ -19,6 +19,7 @@ app.use("/relawan", require('./routes/relawan_route'));
 app.use("/kunjungan", require('./routes/kunjungan_route'));
 app.use("/kebutuhan", require("./routes/kebutuhan_route"));
 app.use("/donasi", require("./routes/donasi_route"));
+app.use("/karya", require("./routes/karya_route"));
 
 //halaman root
 app.get('/', (req, res) => {
