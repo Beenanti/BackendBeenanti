@@ -13,7 +13,7 @@ const upload_gambar = createMulterStorage(
 );
 
 router.post('/:id_panti/tambah', upload_gambar.array('url_gambar', 10),authenticateUser, karyaController.tambahkarya);
-router.get('/:id_panti/lihat', authenticateUser, karyaController.lihatkarya);
+router.get('/lihat/:id_panti', karyaController.lihatkarya);
 router.patch('/:id_panti/edit/:id_karya', authenticateUser, karyaController.editkarya);
 router.delete('/:id_panti/hapus/:id_karya', authenticateUser, karyaController.hapuskarya);
 
